@@ -47,6 +47,10 @@ tags: ['Hello world', 'Test']
 - `/tags.json`
 - `/tags/:slug.json`
 
+# Status
+
+It works, but it needs polishing. Integration specs are OK, unit tests are broken.
+
 # TODO
 
 - GH markdown including source code support.
