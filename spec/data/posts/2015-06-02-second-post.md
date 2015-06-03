@@ -3,7 +3,7 @@ tags: ['Test']
 ---
 
 <div id="excerpt">
-  This is the <em>excerpt</em>.
+  This is the _excerpt_.
 </div>
 
 # Hello world!
