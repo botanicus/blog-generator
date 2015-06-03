@@ -1,3 +1,4 @@
+require 'json'
 require 'forwardable'
 
 module BlogGenerator
@@ -22,7 +23,6 @@ module BlogGenerator
     def to_json(*args)
       self.as_json.to_json(*args)
     end
-
 
     [:push, :<<].each do |method|
       define_method(method) do |*args, &block|

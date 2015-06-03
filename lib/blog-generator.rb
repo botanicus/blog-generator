@@ -1,3 +1,5 @@
+require 'json'
+
 require 'blog-generator/post'
 require 'blog-generator/post_list'
 

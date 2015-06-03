@@ -1,8 +1,7 @@
-require 'date'
 require 'json'
+require 'date'
 require 'yaml'
 require 'nokogiri'
-# require 'ostruct'
 
 module BlogGenerator
   class Post
@@ -18,7 +17,7 @@ module BlogGenerator
 
       published_on, slug, format = parse_path(path)
 
-      @body = convert_markdown if format == :md
+      @body = convert_markdown(self.body) if format == :md
       self.body # cache if it wasn't called yet
 
       @metadata.merge!(slug: slug, published_on: published_on)
@@ -34,7 +33,7 @@ module BlogGenerator
     end
 
     def generate_slug(name)
-      name.downcase.tr(' ', '-').delete('!?')
+      name.downcase.tr(' /', '-').delete('!?')
     end
 
     # Maybe rename body -> raw_body and to_html -> body.
@@ -42,8 +41,9 @@ module BlogGenerator
       @body ||= File.read(@path).match(/\n---\n(.+)$/m)[1].strip
     end
 
+    # We're converting it to MD, apparently it's necessary even though we converted the whole text initially, but it seems like MD ignores whatever is in <div id="excerpt">...</div>.
     def excerpt
-      @excerpt ||= Nokogiri::HTML(self.body).css('#excerpt').inner_html.strip
+      @excerpt ||= Nokogiri::HTML(convert_markdown(Nokogiri::HTML(self.body).css('#excerpt').inner_html.strip)).css('p').inner_html
     end
 
     def as_json
@@ -65,12 +65,12 @@ module BlogGenerator
       [Date.parse(match[1]), match[2], match[3].to_sym]
     end
 
-    def convert_markdown
+    def convert_markdown(markup)
       require 'redcarpet'
 
       renderer = Redcarpet::Render::HTML.new(no_links: true, hard_wrap: true)
       markdown = Redcarpet::Markdown.new(renderer, extensions = {})
-      markdown.render(self.body)
+      markdown.render(markup)
     end
   end
 end

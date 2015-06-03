@@ -1,9 +1,9 @@
 title: 'Second post'
-tags: ['Test']
+tags: ['Test some/thing']
 ---
 
 <div id="excerpt">
-  This is the _excerpt_.
+  This is the *excerpt*.
 </div>
 
 # Hello world!
