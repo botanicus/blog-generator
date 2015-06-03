@@ -2,7 +2,7 @@ require 'date'
 require 'json'
 require 'yaml'
 require 'nokogiri'
-require 'ostruct'
+# require 'ostruct'
 
 module BlogGenerator
   class Post
@@ -12,13 +12,29 @@ module BlogGenerator
     def initialize(path)
       @path = path
 
-      metadata = YAML.load_file(path)
+      @metadata = YAML.load_file(path).reduce(Hash.new) do |buffer, (key, value)|
+        buffer.merge(key.to_sym => value)
+      end
 
       published_on, slug, format = parse_path(path)
-      metadata.merge!(slug: slug, published_on: published_on)
 
-      @metadata, @format = OpenStruct.new(metadata), format.to_sym
-      body
+      @body = convert_markdown if format == :md
+      self.body # cache if it wasn't called yet
+
+      @metadata.merge!(slug: slug, published_on: published_on)
+      @metadata.merge!(excerpt: excerpt)
+
+      @metadata[:tags].map! do |tag|
+        {title: tag, slug: generate_slug(tag)}
+      end
+
+      document = Nokogiri::HTML(self.body)
+      document.css('#excerpt').remove
+      @body = document.css('body').inner_html.strip
+    end
+
+    def generate_slug(name)
+      name.downcase.tr(' ', '-').delete('!?')
     end
 
     # Maybe rename body -> raw_body and to_html -> body.
@@ -27,30 +43,26 @@ module BlogGenerator
     end
 
     def excerpt
-      document.css('#excerpt').inner_html.strip
+      @excerpt ||= Nokogiri::HTML(self.body).css('#excerpt').inner_html.strip
     end
 
-    def to_html
-      return self.body if @format == :html
-      convert_markdown if @format == :md
+    def as_json
+      @metadata.merge(body: body)
     end
 
     def to_json(*args)
-      @metadata.instance_variable_get(:@table).to_json(*args)
+      self.as_json.to_json(*args)
     end
 
     private
     def method_missing(method, *args, &block)
-      @metadata.send(method, *args, &block)
-    end
-
-    def document
-      Nokogiri::HTML(self.to_html)
+      return super if (! args.empty?) || block
+      @metadata[method]
     end
 
     def parse_path(path)
       match = File.basename(path).match(REGEXP)
-      [Date.parse(match[1]), match[2], match[3]]
+      [Date.parse(match[1]), match[2], match[3].to_sym]
     end
 
     def convert_markdown

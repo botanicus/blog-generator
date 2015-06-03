@@ -15,13 +15,17 @@ describe BlogGenerator::Post do
       expect(subject.metadata.slug).to eq('hello-world')
       expect(subject.metadata.published_on.iso8601).to eq('2015-06-01')
     end
+
+    it 'extracts the excerpt' do
+      expect(subject.metadata.excerpt).to eq('This is the <em>excerpt</em>.')
+    end
   end
 
   shared_examples 'HTML body' do
-    describe '#to_html' do
+    describe '#body' do
       it 'returns the HTML' do
-        expect(subject.to_html).to match('<div id="excerpt">')
-        expect(subject.to_html).to match('<h1>Hello world!</h1>')
+        expect(subject.body).to match('<div id="excerpt">')
+        expect(subject.body).to match('<h1>Hello world!</h1>')
       end
     end
 
@@ -50,7 +54,8 @@ describe BlogGenerator::Post do
         'title' => 'Hello world!',
         'tags'  => ['Hello world', 'Test'],
         'slug'  => 'hello-world',
-        'published_on' => '2015-06-01'}.to_json)
+        'published_on' => '2015-06-01',
+        'excerpt' => 'This is the <em>excerpt</em>.'}.to_json)
     end
   end
 end

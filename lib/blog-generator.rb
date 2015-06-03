@@ -20,9 +20,12 @@ module BlogGenerator
 
     def tags
       @posts.reduce(Hash.new) do |buffer, post|
+        puts; puts
+        p post
+        puts; puts
         post.tags.each do |tag|
-          buffer[tag.to_sym] ||= PostList.new
-          buffer[tag.to_sym] << post
+          buffer[tag] ||= PostList.new
+          buffer[tag] << post
         end
 
         buffer

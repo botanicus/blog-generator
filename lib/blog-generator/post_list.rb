@@ -11,10 +11,16 @@ module BlogGenerator
 
     def_delegators :@posts, :reduce, :each
 
-    def to_json(*)
-      self.posts.reduce(Array.new) do |data, post|
-        data << {title: post.title, slug: post.slug}
-      end.to_json
+    def as_json
+      self.posts.map do |post|
+        post.as_json.tap do |metadata|
+          metadata.delete(:body)
+        end
+      end
+    end
+
+    def to_json(*args)
+      self.as_json.to_json(*args)
     end
 
 
