@@ -60,7 +60,7 @@ tags: ['Hello world', 'Test']
 
 # Status
 
-It works, but it needs polishing. Integration specs are OK, unit tests are broken.
+It works, but it needs polishing. Integration specs needs fixing, unit tests passes.
 
 # TODO
 

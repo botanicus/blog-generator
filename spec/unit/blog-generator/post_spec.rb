@@ -7,24 +7,26 @@ describe BlogGenerator::Post do
 
   describe '#metadata' do
     it 'extracts metadata from the YAML header' do
-      expect(subject.metadata.title).to eq('Hello world!')
-      expect(subject.metadata.tags).to eq(['Hello world', 'Test'])
+      expect(subject.metadata[:title]).to eq('Hello world!')
+      hello = {title: 'Hello world', slug: 'hello-world'}
+      test  = {title: 'Test some/thing', slug: 'test-some-thing'}
+      expect(subject.metadata[:tags]).to eq([hello, test])
     end
 
     it 'extracts slug and published_on from the file name' do
-      expect(subject.metadata.slug).to eq('hello-world')
-      expect(subject.metadata.published_on.iso8601).to eq('2015-06-01')
+      expect(subject.metadata[:slug]).to eq('hello-world')
+      expect(subject.metadata[:published_on].iso8601).to eq('2015-06-01')
     end
 
     it 'extracts the excerpt' do
-      expect(subject.metadata.excerpt).to eq('This is the <em>excerpt</em>.')
+      expect(subject.metadata[:excerpt]).to eq('This is the <em>excerpt</em>.')
     end
   end
 
   shared_examples 'HTML body' do
     describe '#body' do
-      it 'returns the HTML' do
-        expect(subject.body).to match('<div id="excerpt">')
+      it 'returns the HTML sans the excerpt' do
+        expect(subject.body).not_to match('<div id="excerpt">')
         expect(subject.body).to match('<h1>Hello world!</h1>')
       end
     end
@@ -49,13 +51,18 @@ describe BlogGenerator::Post do
   end
 
   describe '#to_json' do
-    it 'serialises metadata to JSON' do
+    it 'serialises metadata and the body to JSON' do
       expect(subject.to_json).to eq({
         'title' => 'Hello world!',
-        'tags'  => ['Hello world', 'Test'],
+        'tags'  => [
+          {title: 'Hello world', slug: 'hello-world'},
+          {title: 'Test some/thing', slug: 'test-some-thing'}
+        ],
         'slug'  => 'hello-world',
         'published_on' => '2015-06-01',
-        'excerpt' => 'This is the <em>excerpt</em>.'}.to_json)
+        'excerpt' => 'This is the <em>excerpt</em>.',
+        'body' => "<h1>Hello world!</h1>\n<p>\n  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta quibusdam necessitatibus tempore ullam incidunt amet omnis, veritatis dicta quisquam accusamus at provident vel facere corporis sed fugiat cumque. Consequuntur, necessitatibus!\n</p>"
+      }.to_json)
     end
   end
 end
