@@ -10,7 +10,7 @@ module BlogGenerator
       @posts = Array.new
     end
 
-    def_delegators :@posts, :reduce, :each
+    def_delegators :@posts, :reduce, :each, :first
 
     def as_json
       self.posts.map do |post|

@@ -24,13 +24,31 @@ unless File.directory?(OUTPUT_BASE_PATH)
   Dir.mkdir(OUTPUT_BASE_PATH)
 end
 
+path = File.expand_path(File.join(POSTS_DIR, '..', 'defaults.yml'))
+unless File.exist?(path)
+  puts "~ Feed configuration file #{path} not found."
+end
+
+FEED_DATA = File.exist?(path) ? YAML.load_file(path) : Hash.new
+
 # Generate.
 
 Dir.chdir(OUTPUT_BASE_PATH) do
+  # GET /metadata.json
+  File.open('metadata.json', 'w') do |file|
+    file.puts(FEED_DATA.to_json)
+  end
+
   # GET /api/posts.json
   File.open('posts.json', 'w') do |file|
     # This calls PostList#to_json
     file.puts(JSON.pretty_generate(generator.posts))
+  end
+
+  # GET /posts.atom
+  File.open('posts.atom', 'w') do |file|
+    feed = BlogGenerator::Feed.new(FEED_DATA, generator.posts, 'posts.atom')
+    file.puts(feed.render)
   end
 
   # GET /api/posts/hello-world.json
@@ -50,11 +68,17 @@ Dir.chdir(OUTPUT_BASE_PATH) do
     file.puts(JSON.pretty_generate(tags))
   end
 
-  # GET /api/tags/doxxu.json
   Dir.mkdir('tags') unless Dir.exist?('tags')
   generator.tags.each do |tag, posts|
+    # GET /api/tags/doxxu.json
     File.open("tags/#{tag[:slug]}.json", 'w') do |file|
       file.puts(JSON.pretty_generate(posts))
+    end
+
+    # GET /api/tags/doxxu.atom
+    File.open("tags/#{tag[:slug]}.atom", 'w') do |file|
+      feed = BlogGenerator::Feed.new(FEED_DATA, posts, "#{tag[:slug]}.atom")
+      file.puts(feed.render)
     end
   end
 end

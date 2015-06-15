@@ -42,10 +42,21 @@ tags: ['Hello world', 'Test']
 # Routes generated
 
 - `slug` and `published_on` added to metadata.
+- `/metadata.json`
 - `/posts.json`
 - `/posts/:slug.json`
 - `/tags.json`
 - `/tags/:slug.json`
+
+# Feeds
+
+```html
+<!-- Global feed. -->
+<link href="{{blog.feed_url}}" type="application/atom+xml" rel="alternate" title="{{blog.title}}" />
+
+<!-- Per-tag feeds. -->
+<link href="{{tag.feed_url}}" type="application/atom+xml" rel="alternate" title="{{tag.title}}" />
+```
 
 # Status
 

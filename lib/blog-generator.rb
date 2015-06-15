@@ -3,6 +3,8 @@ require 'json'
 require 'blog-generator/post'
 require 'blog-generator/post_list'
 
+require 'blog-generator/feed'
+
 module BlogGenerator
   class Generator
     def self.parse(posts_dir)
@@ -22,9 +24,6 @@ module BlogGenerator
 
     def tags
       @posts.reduce(Hash.new) do |buffer, post|
-        puts; puts
-        p post
-        puts; puts
         post.tags.each do |tag|
           buffer[tag] ||= PostList.new
           buffer[tag] << post
