@@ -1,8 +1,12 @@
 require 'blog-generator/post'
 
 describe BlogGenerator::Post do
+  let(:site) do
+    Object.new
+  end
+
   subject do
-    described_class.new('spec/data/posts/2015-06-01-hello-world.html')
+    described_class.new(site, 'spec/data/posts/2015-06-01-hello-world.html')
   end
 
   describe '#metadata' do
@@ -44,7 +48,7 @@ describe BlogGenerator::Post do
 
   context 'markdown' do
     subject do
-      described_class.new('spec/data/posts/2015-06-02-second-post.md')
+      described_class.new(site, 'spec/data/posts/2015-06-02-second-post.md')
     end
 
     it_behaves_like 'HTML body'

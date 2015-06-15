@@ -7,9 +7,10 @@ module BlogGenerator
   class Post
     REGEXP = /^(\d{4}-\d{2}-\d{2})-(.+)\.(html|md)$/
 
-    attr_reader :metadata
-    def initialize(path)
-      @path = path
+    attr_reader :site, :metadata
+    def initialize(site, path)
+      # TODO: metadata so we can construct url (base_url + relative) AND merge author
+      @site, @path = site, path
 
       @metadata = YAML.load_file(path).reduce(Hash.new) do |buffer, (key, value)|
         buffer.merge(key.to_sym => value)

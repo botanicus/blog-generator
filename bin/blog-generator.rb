@@ -4,6 +4,7 @@
 #
 # blog-generator.rb [posts dir] [output base path]
 
+require 'ostruct'
 require 'blog-generator'
 
 POSTS_DIR, OUTPUT_BASE_PATH = ARGV
@@ -16,9 +17,6 @@ unless File.directory?(POSTS_DIR)
   abort "Posts directory #{POSTS_DIR} doesn't exist."
 end
 
-# Parse the posts.
-generator = BlogGenerator::Generator.parse(POSTS_DIR)
-
 unless File.directory?(OUTPUT_BASE_PATH)
   puts "~ #{OUTPUT_BASE_PATH} doesn't exist, creating."
   Dir.mkdir(OUTPUT_BASE_PATH)
@@ -29,14 +27,16 @@ unless File.exist?(path)
   puts "~ Feed configuration file #{path} not found."
 end
 
-FEED_DATA = File.exist?(path) ? YAML.load_file(path) : Hash.new
+# Parse the posts.
+site = OpenStruct.new(File.exist?(path) ? YAML.load_file(path) : Hash.new)
+generator = BlogGenerator::Generator.parse(site, POSTS_DIR)
 
 # Generate.
 
 Dir.chdir(OUTPUT_BASE_PATH) do
   # GET /metadata.json
   File.open('metadata.json', 'w') do |file|
-    file.puts(FEED_DATA.to_json)
+    file.puts(site.to_json)
   end
 
   # GET /api/posts.json
@@ -47,7 +47,7 @@ Dir.chdir(OUTPUT_BASE_PATH) do
 
   # GET /posts.atom
   File.open('posts.atom', 'w') do |file|
-    feed = BlogGenerator::Feed.new(FEED_DATA, generator.posts, 'posts.atom')
+    feed = BlogGenerator::Feed.new(site, generator.posts, 'posts.atom')
     file.puts(feed.render)
   end
 
@@ -77,7 +77,7 @@ Dir.chdir(OUTPUT_BASE_PATH) do
 
     # GET /api/tags/doxxu.atom
     File.open("tags/#{tag[:slug]}.atom", 'w') do |file|
-      feed = BlogGenerator::Feed.new(FEED_DATA, posts, "#{tag[:slug]}.atom")
+      feed = BlogGenerator::Feed.new(site, posts, "#{tag[:slug]}.atom")
       file.puts(feed.render)
     end
   end

@@ -1,21 +1,20 @@
 require 'erb'
-require 'ostruct'
 require 'digest'
 require 'forwardable'
 
 module BlogGenerator
   class Feed
     extend Forwardable
-    def_delegators :@feed, :base_url, :title, :subtitle, :author, :email
+    def_delegators :@site, :base_url, :title, :subtitle, :author, :email
 
-    attr_reader :feed, :posts
-    def initialize(feed, posts, relative_url)
-      @feed, @posts = OpenStruct.new(feed), posts
+    attr_reader :site, :posts
+    def initialize(site, posts, relative_url)
+      @site, @posts = site, posts
       @relative_url = relative_url
     end
 
     def feed_url
-      [@feed.base_url, @relative_url].join('/')
+      [@site.base_url, @relative_url].join('/')
     end
 
     def id
@@ -24,7 +23,7 @@ module BlogGenerator
     end
 
     def updated_at
-      self.posts.first.published_on.iso8601
+      self.posts.last.published_on.iso8601
     end
 
     def template

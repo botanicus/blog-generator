@@ -5,12 +5,12 @@ module BlogGenerator
   class PostList
     extend Forwardable
 
-    attr_reader :posts
-    def initialize
-      @posts = Array.new
+    attr_reader :site, :posts
+    def initialize(site)
+      @site, @posts = site, Array.new
     end
 
-    def_delegators :@posts, :reduce, :each, :first
+    def_delegators :@posts, :reduce, :each, :first, :last, :[]
 
     def as_json
       self.posts.map do |post|
