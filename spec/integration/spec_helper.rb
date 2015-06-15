@@ -1,5 +1,9 @@
-%x{rm -rf spec/output}
-%x{bundle exec bin/blog-generator.rb spec/data/posts spec/output}
+puts("$ rm -rf spec/output")
+system("rm -rf spec/output")
+puts("$ bundle exec bin/blog-generator.rb spec/data/posts spec/output")
+puts
+system("bundle exec bin/blog-generator.rb spec/data/posts spec/output")
+puts
 
 shared_examples 'a post listing' do
   it 'has a title' do

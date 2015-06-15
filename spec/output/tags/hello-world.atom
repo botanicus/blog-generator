@@ -3,30 +3,14 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Blog</title>
   <subtitle>Blog subtitle</subtitle>
-  <link href="http://botanicus.me/posts.atom" rel="self" />
+  <link href="http://botanicus.me/hello-world.atom" rel="self" />
   <link href="http://botanicus.me" />
-  <id>urn:uuid:ca9117cbbbf8c3d928f728a212c6c72a</id>
+  <id>urn:uuid:86fb269d190d2c85f6e0468ceca42a20</id>
   <updated>2015-06-01</updated>
 
   
   <entry>
     <title>Hello world!</title>
-    <link href="" />
-    <link rel="alternate" type="text/html" href=""/>
-    <id></id>
-    <updated></updated>
-    <summary>This is the <em>excerpt</em>.</summary>
-    <content type="xhtml">
-      
-    </content>
-    <author>
-      <name></name>
-      <email></email>
-    </author>
-  </entry>
-  
-  <entry>
-    <title>Second post</title>
     <link href="" />
     <link rel="alternate" type="text/html" href=""/>
     <id></id>

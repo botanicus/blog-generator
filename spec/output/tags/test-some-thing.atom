@@ -3,7 +3,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Blog</title>
   <subtitle>Blog subtitle</subtitle>
-  <link href="http://botanicus.me/posts.atom" rel="self" />
+  <link href="http://botanicus.me/test-some-thing.atom" rel="self" />
   <link href="http://botanicus.me" />
   <id>urn:uuid:ca9117cbbbf8c3d928f728a212c6c72a</id>
   <updated>2015-06-01</updated>
