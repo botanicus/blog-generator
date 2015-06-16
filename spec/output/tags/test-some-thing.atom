@@ -6,38 +6,45 @@
   <link href="http://botanicus.me/test-some-thing.atom" rel="self" />
   <link href="http://botanicus.me" />
   <id>urn:uuid:ca9117cbbbf8c3d928f728a212c6c72a</id>
-  <updated>2015-06-02</updated>
+  <updated>2015-06-03T17:03:12+01:00</updated>
 
   
   <entry>
     <title>Hello world!</title>
-    <link href="" />
-    <link rel="alternate" type="text/html" href=""/>
-    <id></id>
-    <updated></updated>
+    <link href="http://botanicus.me/posts/hello-world" />
+    <link rel="alternate" type="text/html" href="http://botanicus.me/posts/hello-world"/>
+    <id>urn:uuid:2095312189753de6ad47dfe20cbe97ec</id>
+    <updated>2015-06-03T17:03:25+01:00</updated>
+    <!-- TODO: strip HTML from excerpt -->
     <summary>This is the <em>excerpt</em>.</summary>
-    <content type="xhtml">
-      
-    </content>
+<!--     <content type="xhtml">
+      <h1>Hello world!</h1>
+<p>
+  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta quibusdam necessitatibus tempore ullam incidunt amet omnis, veritatis dicta quisquam accusamus at provident vel facere corporis sed fugiat cumque. Consequuntur, necessitatibus!
+</p>
+    </content> -->
     <author>
-      <name></name>
-      <email></email>
+      <name>James C Russell</name>
+      <email>james@101ideas.cz</email>
     </author>
   </entry>
   
   <entry>
     <title>Second post</title>
-    <link href="" />
-    <link rel="alternate" type="text/html" href=""/>
-    <id></id>
-    <updated></updated>
+    <link href="http://botanicus.me/posts/second-post" />
+    <link rel="alternate" type="text/html" href="http://botanicus.me/posts/second-post"/>
+    <id>urn:uuid:5560f1a053422f1d452fa6e46bd3147a</id>
+    <updated>2015-06-03T17:03:12+01:00</updated>
+    <!-- TODO: strip HTML from excerpt -->
     <summary>This is the <em>excerpt</em>.</summary>
-    <content type="xhtml">
-      
-    </content>
+<!--     <content type="xhtml">
+      <h1>Hello world!</h1>
+
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta quibusdam necessitatibus tempore ullam incidunt amet omnis, veritatis dicta quisquam accusamus at provident vel facere corporis sed fugiat cumque. Consequuntur, necessitatibus!</p>
+    </content> -->
     <author>
-      <name></name>
-      <email></email>
+      <name>James C Russell</name>
+      <email>james@101ideas.cz</email>
     </author>
   </entry>
   
