@@ -36,7 +36,8 @@ generator = BlogGenerator::Generator.parse(site, POSTS_DIR)
 Dir.chdir(OUTPUT_BASE_PATH) do
   # GET /metadata.json
   File.open('metadata.json', 'w') do |file|
-    file.puts(site.to_json)
+    # TODO: Refactor this, it's evil.
+    file.puts(site.instance_variable_get(:@table).to_json)
   end
 
   # GET /api/posts.json

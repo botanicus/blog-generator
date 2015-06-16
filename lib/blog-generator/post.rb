@@ -10,7 +10,7 @@ module BlogGenerator
     attr_reader :site, :metadata
     def initialize(site, path)
       # TODO: metadata so we can construct url (base_url + relative) AND merge author
-      @site, @path = site, path
+      @site, @path = site, File.expand_path(path)
 
       @metadata = YAML.load_file(path).reduce(Hash.new) do |buffer, (key, value)|
         buffer.merge(key.to_sym => value)
@@ -33,8 +33,33 @@ module BlogGenerator
       @body = document.css('body').inner_html.strip
     end
 
+    def updated_at
+      File.mtime(@path).to_datetime
+    end
+
+    def author
+      self.metadata[:author] || site.author
+    end
+
+    def email
+      self.metadata[:email] || site.email
+    end
+
     def generate_slug(name)
       name.downcase.tr(' /', '-').delete('!?')
+    end
+
+    def relative_url
+      "/posts/#{slug}"
+    end
+
+    def absolute_url
+      [site.base_url, self.relative_url].join('')
+    end
+
+    def id
+      digest = Digest::MD5.hexdigest(self.metadata[:slug])
+      "urn:uuid:#{digest}"
     end
 
     # Maybe rename body -> raw_body and to_html -> body.

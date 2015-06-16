@@ -23,7 +23,7 @@ module BlogGenerator
     end
 
     def updated_at
-      self.posts.last.published_on.iso8601
+      self.posts.last.updated_at
     end
 
     def template
@@ -46,19 +46,20 @@ __END__
   <link href="<%= self.feed_url %>" rel="self" />
   <link href="<%= self.base_url %>" />
   <id><%= self.id %></id>
-  <updated><%= self.updated_at %></updated>
+  <updated><%= self.updated_at.iso8601 %></updated>
 
   <% posts.each do |post| %>
   <entry>
     <title><%= post.title %></title>
-    <link href="<%= post.url %>" />
-    <link rel="alternate" type="text/html" href="<%= post.url %>"/>
+    <link href="<%= post.absolute_url %>" />
+    <link rel="alternate" type="text/html" href="<%= post.absolute_url %>"/>
     <id><%= post.id %></id>
-    <updated><%= post.updated_at %></updated>
+    <updated><%= post.updated_at.iso8601 %></updated>
+    <!-- TODO: strip HTML from excerpt -->
     <summary><%= post.excerpt %></summary>
-    <content type="xhtml">
-      <%= post.content %>
-    </content>
+<!--     <content type="xhtml">
+      <%= post.body %>
+    </content> -->
     <author>
       <name><%= post.author %></name>
       <email><%= post.email %></email>
