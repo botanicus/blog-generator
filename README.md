@@ -64,4 +64,5 @@ It works, but it needs polishing.
 
 # TODO
 
+- Generate assets by parsing the document, no explicit spec.
 - GH markdown including source code support.

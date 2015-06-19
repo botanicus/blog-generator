@@ -64,7 +64,7 @@ Dir.chdir(OUTPUT_BASE_PATH) do
   File.open('tags.json', 'w') do |file|
     # [{title: x, slug: y}]
     tags = generator.tags.map do |tag, _|
-      tag
+      tag.merge(path: "/tags/#{tag[:slug]}") ### TODO: some routing config.
     end
     file.puts(JSON.pretty_generate(tags))
   end

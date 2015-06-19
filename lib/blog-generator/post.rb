@@ -23,6 +23,7 @@ module BlogGenerator
 
       @metadata.merge!(slug: slug, published_on: published_on)
       @metadata.merge!(excerpt: excerpt)
+      @metadata.merge!(path: "/posts/#{slug}") ### TODO: some routing config.
 
       @metadata[:tags].map! do |tag|
         {title: tag, slug: generate_slug(tag)}
