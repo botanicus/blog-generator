@@ -55,16 +55,16 @@ Dir.chdir(OUTPUT_BASE_PATH) do
   # GET /api/posts/hello-world.json
   Dir.mkdir('posts') unless Dir.exist?('posts')
   generator.posts.each do |post|
-    File.open("posts/#{post.slug}.json", 'w') do |file|
+    File.open("posts/#{post.key}.json", 'w') do |file|
       file.puts(JSON.pretty_generate(post))
     end
   end
 
   # GET /api/tags.json
   File.open('tags.json', 'w') do |file|
-    # [{title: x, slug: y}]
+    # [{title: x, key: y}]
     tags = generator.tags.map do |tag, _|
-      tag.merge(path: "/tags/#{tag[:slug]}") ### TODO: some routing config.
+      tag.merge(path: "/tags/#{tag[:key]}") ### TODO: some routing config.
     end
     file.puts(JSON.pretty_generate(tags))
   end
@@ -72,13 +72,13 @@ Dir.chdir(OUTPUT_BASE_PATH) do
   Dir.mkdir('tags') unless Dir.exist?('tags')
   generator.tags.each do |tag, posts|
     # GET /api/tags/doxxu.json
-    File.open("tags/#{tag[:slug]}.json", 'w') do |file|
+    File.open("tags/#{tag[:key]}.json", 'w') do |file|
       file.puts(JSON.pretty_generate(posts))
     end
 
     # GET /api/tags/doxxu.atom
-    File.open("tags/#{tag[:slug]}.atom", 'w') do |file|
-      feed = BlogGenerator::Feed.new(site, posts, "#{tag[:slug]}.atom")
+    File.open("tags/#{tag[:key]}.atom", 'w') do |file|
+      feed = BlogGenerator::Feed.new(site, posts, "#{tag[:key]}.atom")
       file.puts(feed.render)
     end
   end

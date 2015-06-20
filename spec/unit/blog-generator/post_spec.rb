@@ -12,13 +12,13 @@ describe BlogGenerator::Post do
   describe '#metadata' do
     it 'extracts metadata from the YAML header' do
       expect(subject.metadata[:title]).to eq('Hello world!')
-      hello = {title: 'Hello world', slug: 'hello-world'}
-      test  = {title: 'Test some/thing', slug: 'test-some-thing'}
+      hello = {title: 'Hello world', key: 'hello-world'}
+      test  = {title: 'Test some/thing', key: 'test-some-thing'}
       expect(subject.metadata[:tags]).to eq([hello, test])
     end
 
-    it 'extracts slug and published_on from the file name' do
-      expect(subject.metadata[:slug]).to eq('hello-world')
+    it 'extracts key and published_on from the file name' do
+      expect(subject.metadata[:key]).to eq('hello-world')
       expect(subject.metadata[:published_on].iso8601).to eq('2015-06-01')
     end
 
@@ -59,10 +59,10 @@ describe BlogGenerator::Post do
       expect(subject.to_json).to eq({
         'title' => 'Hello world!',
         'tags'  => [
-          {title: 'Hello world', slug: 'hello-world'},
-          {title: 'Test some/thing', slug: 'test-some-thing'}
+          {title: 'Hello world', key: 'hello-world'},
+          {title: 'Test some/thing', key: 'test-some-thing'}
         ],
-        'slug'  => 'hello-world',
+        'key'  => 'hello-world',
         'published_on' => '2015-06-01',
         'excerpt' => 'This is the <em>excerpt</em>.',
         'body' => "<h1>Hello world!</h1>\n<p>\n  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta quibusdam necessitatibus tempore ullam incidunt amet omnis, veritatis dicta quisquam accusamus at provident vel facere corporis sed fugiat cumque. Consequuntur, necessitatibus!\n</p>"

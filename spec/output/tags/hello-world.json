@@ -4,14 +4,14 @@
     "tags": [
       {
         "title": "Hello world",
-        "slug": "hello-world"
+        "key": "hello-world"
       },
       {
         "title": "Test some/thing",
-        "slug": "test-some-thing"
+        "key": "test-some-thing"
       }
     ],
-    "slug": "hello-world",
+    "key": "hello-world",
     "published_on": "2015-06-01",
     "excerpt": "This is the <em>excerpt</em>."
   }
