@@ -60,15 +60,15 @@ Dir.chdir(OUTPUT_BASE_PATH) do
   end
 
   # GET /api/tags.json
-  file 'tags.json', JSON.pretty_generate(generator.tags)
+  file 'tags.json', JSON.pretty_generate(generator.tags.keys)
 
   Dir.mkdir('tags') unless Dir.exist?('tags')
   generator.tags.each do |tag, posts|
     # GET /api/tags/doxxu.json
-    file "tags/#{tag}.json", JSON.pretty_generate(posts)
+    file "tags/#{tag[:slug]}.json", JSON.pretty_generate(posts)
 
     # GET /api/tags/doxxu.atom
-    feed = BlogGenerator::Feed.new(site, posts, "#{tag}.atom")
-    file "tags/#{tag}.atom", feed.render
+    feed = BlogGenerator::Feed.new(site, posts, "#{tag[:slug]}.atom")
+    file "tags/#{tag[:slug]}.atom", feed.render
   end
 end

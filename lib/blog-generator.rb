@@ -12,6 +12,10 @@ module BlogGenerator
         posts.push(Post.new(site, path))
       end
 
+      posts.sort do |a, b|
+        a.published_on <=> b.published_on
+      end
+
       self.new(site, posts)
     end
 
@@ -23,8 +27,8 @@ module BlogGenerator
     def tags
       @posts.reduce(Hash.new) do |buffer, post|
         post.tags.each do |tag|
-          buffer[tag[:slug]] ||= PostList.new(site)
-          buffer[tag[:slug]] << post
+          buffer[tag] ||= PostList.new(site)
+          buffer[tag] << post
         end
 
         buffer
