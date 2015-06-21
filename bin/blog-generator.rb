@@ -33,53 +33,42 @@ generator = BlogGenerator::Generator.parse(site, POSTS_DIR)
 
 # Generate.
 
+def file(path, content)
+  puts "~ #{path}"
+  File.open(path, 'w') do |file|
+    file.puts(content)
+  end
+end
+
 Dir.chdir(OUTPUT_BASE_PATH) do
   # GET /metadata.json
-  File.open('metadata.json', 'w') do |file|
-    # TODO: Refactor this, it's evil.
-    file.puts(site.instance_variable_get(:@table).to_json)
-  end
+  # TODO: Refactor this, it's evil.
+  file 'metadata.json', site.instance_variable_get(:@table).to_json
 
   # GET /api/posts.json
-  File.open('posts.json', 'w') do |file|
-    # This calls PostList#to_json
-    file.puts(JSON.pretty_generate(generator.posts))
-  end
+  # This calls PostList#to_json
+  file 'posts.json', JSON.pretty_generate(generator.posts)
 
   # GET /posts.atom
-  File.open('posts.atom', 'w') do |file|
-    feed = BlogGenerator::Feed.new(site, generator.posts, 'posts.atom')
-    file.puts(feed.render)
-  end
+  feed = BlogGenerator::Feed.new(site, generator.posts, 'posts.atom')
+  file 'posts.atom', feed.render
 
   # GET /api/posts/hello-world.json
   Dir.mkdir('posts') unless Dir.exist?('posts')
   generator.posts.each do |post|
-    File.open("posts/#{post.key}.json", 'w') do |file|
-      file.puts(JSON.pretty_generate(post))
-    end
+    file "posts/#{post.key}.json", JSON.pretty_generate(post)
   end
 
   # GET /api/tags.json
-  File.open('tags.json', 'w') do |file|
-    # [{title: x, key: y}]
-    tags = generator.tags.map do |tag, _|
-      tag.merge(path: "/tags/#{tag[:key]}") ### TODO: some routing config.
-    end
-    file.puts(JSON.pretty_generate(tags))
-  end
+  file 'tags.json', JSON.pretty_generate(generator.tags)
 
   Dir.mkdir('tags') unless Dir.exist?('tags')
   generator.tags.each do |tag, posts|
     # GET /api/tags/doxxu.json
-    File.open("tags/#{tag[:key]}.json", 'w') do |file|
-      file.puts(JSON.pretty_generate(posts))
-    end
+    file "tags/#{tag}.json", JSON.pretty_generate(posts)
 
     # GET /api/tags/doxxu.atom
-    File.open("tags/#{tag[:key]}.atom", 'w') do |file|
-      feed = BlogGenerator::Feed.new(site, posts, "#{tag[:key]}.atom")
-      file.puts(feed.render)
-    end
+    feed = BlogGenerator::Feed.new(site, posts, "#{tag}.atom")
+    file "tags/#{tag}.atom", feed.render
   end
 end

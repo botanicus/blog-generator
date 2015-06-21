@@ -9,9 +9,7 @@ module BlogGenerator
   class Generator
     def self.parse(site, posts_dir)
       posts = Dir.glob("#{posts_dir}/*.{html,md}").reduce(PostList.new(site)) do |posts, path|
-        post = Post.new(site, path)
-        puts "~ Parsing #{post.inspect}"
-        posts.push(post)
+        posts.push(Post.new(site, path))
       end
 
       self.new(site, posts)
@@ -25,8 +23,8 @@ module BlogGenerator
     def tags
       @posts.reduce(Hash.new) do |buffer, post|
         post.tags.each do |tag|
-          buffer[tag] ||= PostList.new(site)
-          buffer[tag] << post
+          buffer[tag[:key]] ||= PostList.new(site)
+          buffer[tag[:key]] << post
         end
 
         buffer
