@@ -13,7 +13,7 @@ module BlogGenerator
       end
 
       posts = posts.sort do |a, b|
-        a.published_on <=> b.published_on
+        b.published_on <=> a.published_on
       end
 
       self.new(site, posts)
