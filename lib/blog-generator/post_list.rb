@@ -6,8 +6,8 @@ module BlogGenerator
     extend Forwardable
 
     attr_reader :site, :posts
-    def initialize(site)
-      @site, @posts = site, Array.new
+    def initialize(site, posts = Array.new)
+      @site, @posts = site, posts
     end
 
     def_delegators :@posts, :reduce, :each, :sort, :first, :last, :[]
