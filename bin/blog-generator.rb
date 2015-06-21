@@ -29,6 +29,8 @@ end
 
 # Parse the posts.
 site = OpenStruct.new(File.exist?(path) ? YAML.load_file(path) : Hash.new)
+feed = BlogGenerator::Feed.new(site, [], 'posts.atom') # This is just to have the object, we're rendering it later, once we get the posts.
+site.feeds = [feed.as_json]
 generator = BlogGenerator::Generator.parse(site, POSTS_DIR)
 
 # Generate.
@@ -41,6 +43,10 @@ def file(path, content)
 end
 
 Dir.chdir(OUTPUT_BASE_PATH) do
+  # GET /posts.atom
+  feed = BlogGenerator::Feed.new(site, generator.posts, 'posts.atom')
+  file 'posts.atom', feed.render
+
   # GET /metadata.json
   # TODO: Refactor this, it's evil.
   file 'metadata.json', site.instance_variable_get(:@table).to_json
@@ -48,10 +54,6 @@ Dir.chdir(OUTPUT_BASE_PATH) do
   # GET /api/posts.json
   # This calls PostList#to_json
   file 'posts.json', JSON.pretty_generate(generator.posts)
-
-  # GET /posts.atom
-  feed = BlogGenerator::Feed.new(site, generator.posts, 'posts.atom')
-  file 'posts.atom', feed.render
 
   # GET /api/posts/hello-world.json
   Dir.mkdir('posts') unless Dir.exist?('posts')
@@ -64,11 +66,13 @@ Dir.chdir(OUTPUT_BASE_PATH) do
 
   Dir.mkdir('tags') unless Dir.exist?('tags')
   generator.tags.each do |tag, posts|
-    # GET /api/tags/doxxu.json
-    file "tags/#{tag[:slug]}.json", JSON.pretty_generate(posts)
-
     # GET /api/tags/doxxu.atom
     feed = BlogGenerator::Feed.new(site, posts, "#{tag[:slug]}.atom")
     file "tags/#{tag[:slug]}.atom", feed.render
+
+    # GET /api/tags/doxxu.json
+    tag[:feeds] = [site.feed, feed]
+    body = {tag: tag, posts: posts}
+    file "tags/#{tag[:slug]}.json", JSON.pretty_generate(body)
   end
 end

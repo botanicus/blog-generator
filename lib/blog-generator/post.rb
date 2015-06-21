@@ -26,7 +26,9 @@ module BlogGenerator
       @metadata.merge!(path: "/posts/#{slug}") ### TODO: some routing config.
 
       @metadata[:tags].map! do |tag|
-        {title: tag, slug: generate_slug(tag)}
+        slug = generate_slug(tag)
+        tag_feed = Feed.new(site, [], "#{slug}.atom").as_json
+        {title: tag, slug: slug, feeds: @site.feeds + [tag_feed]}
       end
 
       document = Nokogiri::HTML(self.body)

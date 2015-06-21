@@ -17,6 +17,14 @@ module BlogGenerator
       [@site.base_url, @relative_url].join('/')
     end
 
+    def as_json
+      {title: self.title, url: self.feed_url}
+    end
+
+    def to_json(*args)
+      self.as_json.to_json(*args)
+    end
+
     def id
       digest = Digest::MD5.hexdigest(posts.each.map(&:title).join(","))
       "urn:uuid:#{digest}"
