@@ -37,16 +37,16 @@ tags: ['Hello world', 'Test']
 - Metadata `draft: true` will exclude the post.
 - Any other metadata can be added and will be accessible in the resulting JSON.
 - Body has `#excerpt`.
-- Format `posts/:published_on-:key.:format`.
+- Format `posts/:published_on-:slug.:format`.
 
 # Routes generated
 
-- `key` and `published_on` added to metadata.
+- `slug` and `published_on` added to metadata.
 - `/metadata.json`
 - `/posts.json`
-- `/posts/:key.json`
+- `/posts/:slug.json`
 - `/tags.json`
-- `/tags/:key.json`
+- `/tags/:slug.json`
 
 # Feeds
 

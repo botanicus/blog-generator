@@ -17,8 +17,8 @@ describe '/tags.json' do
       expect(subject['title']).to eq('Hello world')
     end
 
-    it 'has a key' do
-      expect(subject['key']).to eq('hello-world')
+    it 'has a slug' do
+      expect(subject['slug']).to eq('hello-world')
     end
   end
 end

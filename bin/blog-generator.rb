@@ -56,7 +56,7 @@ Dir.chdir(OUTPUT_BASE_PATH) do
   # GET /api/posts/hello-world.json
   Dir.mkdir('posts') unless Dir.exist?('posts')
   generator.posts.each do |post|
-    file "posts/#{post.key}.json", JSON.pretty_generate(post)
+    file "posts/#{post.slug}.json", JSON.pretty_generate(post)
   end
 
   # GET /api/tags.json

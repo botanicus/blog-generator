@@ -1,10 +1,10 @@
 [
   {
     "title": "Hello world",
-    "key": "hello-world"
+    "slug": "hello-world"
   },
   {
     "title": "Test some/thing",
-    "key": "test-some-thing"
+    "slug": "test-some-thing"
   }
 ]

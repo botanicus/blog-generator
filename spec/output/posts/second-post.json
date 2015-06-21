@@ -3,10 +3,10 @@
   "tags": [
     {
       "title": "Test some/thing",
-      "key": "test-some-thing"
+      "slug": "test-some-thing"
     }
   ],
-  "key": "second-post",
+  "slug": "second-post",
   "published_on": "2015-06-02",
   "excerpt": "This is the <em>excerpt</em>.",
   "body": "<h1>Hello world!</h1>\n\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta quibusdam necessitatibus tempore ullam incidunt amet omnis, veritatis dicta quisquam accusamus at provident vel facere corporis sed fugiat cumque. Consequuntur, necessitatibus!</p>"

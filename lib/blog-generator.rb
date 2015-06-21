@@ -23,8 +23,8 @@ module BlogGenerator
     def tags
       @posts.reduce(Hash.new) do |buffer, post|
         post.tags.each do |tag|
-          buffer[tag[:key]] ||= PostList.new(site)
-          buffer[tag[:key]] << post
+          buffer[tag[:slug]] ||= PostList.new(site)
+          buffer[tag[:slug]] << post
         end
 
         buffer

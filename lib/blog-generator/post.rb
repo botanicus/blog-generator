@@ -12,21 +12,21 @@ module BlogGenerator
       # TODO: metadata so we can construct url (base_url + relative) AND merge author
       @site, @path = site, File.expand_path(path)
 
-      @metadata = YAML.load_file(path).reduce(Hash.new) do |buffer, (key, value)|
-        buffer.merge(key.to_sym => value)
+      @metadata = YAML.load_file(path).reduce(Hash.new) do |buffer, (slug, value)|
+        buffer.merge(slug.to_sym => value)
       end
 
-      published_on, key, format = parse_path(path)
+      published_on, slug, format = parse_path(path)
 
       @body = convert_markdown(self.body) if format == :md
       self.body # cache if it wasn't called yet
 
-      @metadata.merge!(key: key, published_on: published_on)
+      @metadata.merge!(slug: slug, published_on: published_on)
       @metadata.merge!(excerpt: excerpt)
-      @metadata.merge!(path: "/posts/#{key}") ### TODO: some routing config.
+      @metadata.merge!(path: "/posts/#{slug}") ### TODO: some routing config.
 
       @metadata[:tags].map! do |tag|
-        {title: tag, key: generate_key(tag)}
+        {title: tag, slug: generate_slug(tag)}
       end
 
       document = Nokogiri::HTML(self.body)
@@ -46,12 +46,12 @@ module BlogGenerator
       self.metadata[:email] || site.email
     end
 
-    def generate_key(name)
+    def generate_slug(name)
       name.downcase.tr(' /', '-').delete('!?')
     end
 
     def relative_url
-      "/posts/#{key}"
+      "/posts/#{slug}"
     end
 
     def absolute_url
@@ -59,7 +59,7 @@ module BlogGenerator
     end
 
     def id
-      digest = Digest::MD5.hexdigest(self.metadata[:key])
+      digest = Digest::MD5.hexdigest(self.metadata[:slug])
       "urn:uuid:#{digest}"
     end
 

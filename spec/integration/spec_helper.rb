@@ -10,8 +10,8 @@ shared_examples 'a post listing' do
     expect(subject['title']).to eq('Second post')
   end
 
-  it 'has a key' do
-    expect(subject['key']).to eq('second-post')
+  it 'has a slug' do
+    expect(subject['slug']).to eq('second-post')
   end
 
   it 'has a published_on date' do
@@ -23,6 +23,6 @@ shared_examples 'a post listing' do
   end
 
   it 'has tags' do
-    expect(subject['tags']).to eq([{'title' => 'Test some/thing', 'key' => 'test-some-thing'}])
+    expect(subject['tags']).to eq([{'title' => 'Test some/thing', 'slug' => 'test-some-thing'}])
   end
 end
