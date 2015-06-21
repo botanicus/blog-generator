@@ -12,7 +12,7 @@ module BlogGenerator
         posts.push(Post.new(site, path))
       end
 
-      posts.sort do |a, b|
+      posts = posts.sort do |a, b|
         a.published_on <=> b.published_on
       end
 
