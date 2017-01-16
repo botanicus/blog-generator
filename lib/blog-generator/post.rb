@@ -7,7 +7,7 @@ module BlogGenerator
   class Post
     REGEXP = /^(\d{4}-\d{2}-\d{2})-(.+)\.(html|md)$/
 
-    attr_reader :site, :metadata
+    attr_reader :site, :metadata, :format
     def initialize(site, path)
       # TODO: metadata so we can construct url (base_url + relative) AND merge author
       @site, @path = site, File.expand_path(path)
@@ -17,6 +17,7 @@ module BlogGenerator
       end
 
       published_on, slug, format = parse_path(path)
+      @format = format # So we can access it from excerpt without having to pass it as an argument and break everything.
 
       @body = convert_markdown(self.body) if format == :md
       self.body # cache if it wasn't called yet
@@ -76,9 +77,15 @@ module BlogGenerator
       @body ||= File.read(@path).match(/\n---\n(.+)$/m)[1].strip
     end
 
-    # We're converting it to MD, apparently it's necessary even though we converted the whole text initially, but it seems like MD ignores whatever is in <div id="excerpt">...</div>.
     def excerpt
-      @excerpt ||= Nokogiri::HTML(convert_markdown(Nokogiri::HTML(self.body).css('#excerpt').inner_html.strip)).css('p').inner_html
+      if self.format == :html
+        @excerpt ||= Nokogiri::HTML(Nokogiri::HTML(self.body).css('#excerpt').inner_html.strip).css('p').inner_html
+      elsif self.format == :md
+        # We're converting it to MD, apparently it's necessary even though we
+        # converted the whole text initially, but it seems like MD ignores whatever
+        # is in <div id="excerpt">...</div>.
+        @excerpt ||= Nokogiri::HTML(convert_markdown(Nokogiri::HTML(self.body).css('#excerpt').inner_html.strip)).css('p').inner_html
+      end
     end
 
     def as_json
