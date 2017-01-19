@@ -47,8 +47,10 @@ Dir.chdir(OUTPUT_BASE_PATH) do
   file 'metadata.json', JSON.pretty_generate(site.instance_variable_get(:@table))
 
   # GET /posts.atom
-  feed = BlogGenerator::Feed.new(site, generator.posts, 'posts.atom')
-  file 'posts.atom', feed.render
+  if generator.posts.any?
+    feed = BlogGenerator::Feed.new(site, generator.posts, 'posts.atom')
+    file 'posts.atom', feed.render
+  end
 
   # GET /api/posts.json
   # This calls PostList#to_json
