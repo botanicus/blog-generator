@@ -29,7 +29,7 @@ module BlogGenerator
       @metadata[:tags].map! do |tag|
         slug = generate_slug(tag)
         feed = "#{site.base_url}/#{slug}.atom"
-        {title: tag, slug: slug, feed: feed}
+        {title: tag, slug: slug, path: "/tags/#{slug}", feed: feed}
       end
 
       tag_feeds = @metadata[:tags].map do |tag|

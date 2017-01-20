@@ -12,11 +12,13 @@ module BlogGenerator
         posts.push(Post.new(site, path))
       end
 
-      posts = posts.sort do |a, b|
+      published_posts = posts.select { |post| ! post.metadata[:draft] }
+
+      published_posts.sort! do |a, b|
         b.published_on <=> a.published_on
       end
 
-      self.new(site, PostList.new(site, posts))
+      self.new(site, PostList.new(site, published_posts))
     end
 
     attr_reader :site, :posts
