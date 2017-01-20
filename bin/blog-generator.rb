@@ -5,6 +5,7 @@
 # blog-generator.rb [posts dir] [output base path]
 
 require 'ostruct'
+require 'fileutils'
 require 'blog-generator'
 
 POSTS_DIR, OUTPUT_BASE_PATH = ARGV
@@ -17,10 +18,9 @@ unless File.directory?(POSTS_DIR)
   abort "Posts directory #{POSTS_DIR} doesn't exist."
 end
 
-unless File.directory?(OUTPUT_BASE_PATH)
-  puts "~ #{OUTPUT_BASE_PATH} doesn't exist, creating."
-  Dir.mkdir(OUTPUT_BASE_PATH)
-end
+
+FileUtils.rm_r(OUTPUT_BASE_PATH) if File.directory?(OUTPUT_BASE_PATH)
+Dir.mkdir(OUTPUT_BASE_PATH)
 
 path = File.expand_path(File.join(POSTS_DIR, '..', 'defaults.yml'))
 unless File.exist?(path)
