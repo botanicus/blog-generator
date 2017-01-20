@@ -17,9 +17,9 @@ describe BlogGenerator::Post do
       expect(subject.metadata[:tags]).to eq([hello, test])
     end
 
-    it 'extracts slug and published_on from the file name' do
+    it 'extracts slug and published_at from the file name' do
       expect(subject.metadata[:slug]).to eq('hello-world')
-      expect(subject.metadata[:published_on].iso8601).to eq('2015-06-01')
+      expect(subject.metadata[:published_at].iso8601).to eq('2015-06-01')
     end
 
     it 'extracts the excerpt' do
@@ -63,7 +63,7 @@ describe BlogGenerator::Post do
           {title: 'Test some/thing', slug: 'test-some-thing'}
         ],
         'slug'  => 'hello-world',
-        'published_on' => '2015-06-01',
+        'published_at' => '2015-06-01',
         'excerpt' => 'This is the <em>excerpt</em>.',
         'body' => "<h1>Hello world!</h1>\n<p>\n  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta quibusdam necessitatibus tempore ullam incidunt amet omnis, veritatis dicta quisquam accusamus at provident vel facere corporis sed fugiat cumque. Consequuntur, necessitatibus!\n</p>"
       }.to_json)

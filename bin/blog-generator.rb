@@ -5,6 +5,7 @@
 # blog-generator.rb [posts dir] [output base path]
 
 require 'ostruct'
+require 'fileutils'
 require 'blog-generator'
 
 POSTS_DIR, OUTPUT_BASE_PATH = ARGV
@@ -22,12 +23,11 @@ unless File.directory?(OUTPUT_BASE_PATH)
   Dir.mkdir(OUTPUT_BASE_PATH)
 end
 
-# generate random IDs
-# created_at = when compiled, UTC date time. Do not update if was created before.
-# updated_at = UTC date time if MD5 of body was updated
-# slug cannot be updated
-# delete if was deleted
-# => It has to be in Git now.
+OLD_POSTS = Dir.glob("#{OUTPUT_BASE_PATH}/posts/*.json").reduce(Hash.new) do |posts, path|
+  post = JSON.parse(File.read(path))
+  posts.merge(post['slug'] => post)
+end
+
 path = File.expand_path(File.join(POSTS_DIR, '..', 'defaults.yml'))
 unless File.exist?(path)
   puts "~ Feed configuration file #{path} not found."
@@ -36,7 +36,7 @@ end
 # Parse the posts.
 site = OpenStruct.new(File.exist?(path) ? YAML.load_file(path) : Hash.new)
 site.feed = [site.base_url, 'posts.atom'].join('/')
-generator = BlogGenerator::Generator.parse(site, POSTS_DIR)
+generator = BlogGenerator::Generator.parse(site, POSTS_DIR, OLD_POSTS)
 
 # Generate.
 

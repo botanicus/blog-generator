@@ -11,7 +11,7 @@
     }
   ],
   "slug": "hello-world",
-  "published_on": "2015-06-01",
+  "published_at": "2015-06-01",
   "excerpt": "This is the <em>excerpt</em>.",
   "body": "<h1>Hello world!</h1>\n<p>\n  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta quibusdam necessitatibus tempore ullam incidunt amet omnis, veritatis dicta quisquam accusamus at provident vel facere corporis sed fugiat cumque. Consequuntur, necessitatibus!\n</p>"
 }

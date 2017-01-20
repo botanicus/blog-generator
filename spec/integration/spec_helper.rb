@@ -14,8 +14,8 @@ shared_examples 'a post listing' do
     expect(subject['slug']).to eq('second-post')
   end
 
-  it 'has a published_on date' do
-    expect(subject['published_on']).to eq('2015-06-02')
+  it 'has a published_at date' do
+    expect(subject['published_at']).to eq('2015-06-02')
   end
 
   it 'has an excerpt' do

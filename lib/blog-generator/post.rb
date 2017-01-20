@@ -17,12 +17,17 @@ module BlogGenerator
       end
 
       published_on, slug, format = parse_path(path)
+
+      if published_at && published_on != published_at # .... format
+        raise "Invalid format: #{[published_on, published_at].inspect}"
+      end
+
       @format = format # So we can access it from excerpt without having to pass it as an argument and break everything.
 
       @body = convert_markdown(self.body) if format == :md
       self.body # cache if it wasn't called yet
 
-      @metadata.merge!(slug: slug, published_on: published_on)
+      @metadata.merge!(slug: slug, published_at: published_at)
       @metadata.merge!(excerpt: excerpt)
       @metadata.merge!(path: "/posts/#{slug}") ### TODO: some routing config.
 
