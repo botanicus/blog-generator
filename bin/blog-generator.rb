@@ -22,6 +22,12 @@ unless File.directory?(OUTPUT_BASE_PATH)
   Dir.mkdir(OUTPUT_BASE_PATH)
 end
 
+# generate random IDs
+# created_at = when compiled, UTC date time. Do not update if was created before.
+# updated_at = UTC date time if MD5 of body was updated
+# slug cannot be updated
+# delete if was deleted
+# => It has to be in Git now.
 path = File.expand_path(File.join(POSTS_DIR, '..', 'defaults.yml'))
 unless File.exist?(path)
   puts "~ Feed configuration file #{path} not found."
