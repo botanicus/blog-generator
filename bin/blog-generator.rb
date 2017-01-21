@@ -8,7 +8,7 @@ require 'ostruct'
 require 'fileutils'
 require 'blog-generator'
 
-POSTS_DIR, OUTPUT_BASE_PATH = ARGV
+POSTS_DIR, OUTPUT_BASE_PATH = ARGV.map { |i| i.chomp('/') }
 
 unless ARGV.length == 2
   abort "Usage: #{$0} [posts dir] [output base path]"
@@ -18,12 +18,18 @@ unless File.directory?(POSTS_DIR)
   abort "Posts directory #{POSTS_DIR} doesn't exist."
 end
 
-unless File.directory?(OUTPUT_BASE_PATH)
+if Dir.exists?("#{OUTPUT_BASE_PATH}_prev") # If it does, the last build crashed.
+  puts "~ Last build crashed. Reusing #{OUTPUT_BASE_PATH}_prev."
+elsif (! Dir.exists?("#{OUTPUT_BASE_PATH}_prev")) && Dir.exists?(OUTPUT_BASE_PATH) # otherwise it's first run.
+  FileUtils.mv(OUTPUT_BASE_PATH, "#{OUTPUT_BASE_PATH}_prev") # So we don't get any artifacts.
+end
+
+unless Dir.exists?(OUTPUT_BASE_PATH)
   puts "~ #{OUTPUT_BASE_PATH} doesn't exist, creating."
   Dir.mkdir(OUTPUT_BASE_PATH)
 end
 
-OLD_POSTS = Dir.glob("#{OUTPUT_BASE_PATH}/posts/*.json").reduce(Hash.new) do |posts, path|
+OLD_POSTS = Dir.glob("#{OUTPUT_BASE_PATH}_prev/posts/*.json").reduce(Hash.new) do |posts, path|
   post = JSON.parse(File.read(path))
   posts.merge(post['slug'] => post)
 end
@@ -82,3 +88,5 @@ Dir.chdir(OUTPUT_BASE_PATH) do
     file "tags/#{tag[:slug]}.atom", feed.render
   end
 end
+
+FileUtils.rm_rf("#{OUTPUT_BASE_PATH}_prev") # Has to be forced, otherwise fails on the first run.

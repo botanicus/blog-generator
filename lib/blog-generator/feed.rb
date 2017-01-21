@@ -1,6 +1,7 @@
 require 'erb'
 require 'digest'
 require 'forwardable'
+require 'date'
 
 module BlogGenerator
   class Feed
@@ -31,7 +32,7 @@ module BlogGenerator
     end
 
     def updated_at
-      self.posts.last.updated_at
+      self.posts.last.updated_at ||  self.posts.last.published_at
     end
 
     def template
@@ -54,7 +55,7 @@ __END__
   <link href="<%= self.feed_url %>" rel="self" />
   <link href="<%= self.base_url %>" />
   <id><%= self.id %></id>
-  <updated><%= self.updated_at.iso8601 %></updated>
+  <updated><%= self.updated_at.to_date.iso8601 %></updated>
 
   <% posts.each do |post| %>
   <entry>
@@ -62,7 +63,7 @@ __END__
     <link href="<%= post.absolute_url %>" />
     <link rel="alternate" type="text/html" href="<%= post.absolute_url %>"/>
     <id><%= post.id %></id>
-    <updated><%= post.updated_at.iso8601 %></updated>
+    <updated><%= (post.updated_at || post.published_at).to_date.iso8601 %></updated>
     <!-- TODO: strip HTML from excerpt -->
     <summary><%= post.excerpt %></summary>
 <!--     <content type="xhtml">
