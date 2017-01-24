@@ -5,5 +5,4 @@ gemspec
 
 group(:spec) do
   gem 'rspec'
-  gem 'pry'
 end
