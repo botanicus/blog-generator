@@ -13,5 +13,5 @@ Gem::Specification.new do |s|
   s.files       = Dir.glob('{bin,lib}/**/*.rb') + ['README.md']
   s.executables = Dir['bin/*'].map(&File.method(:basename))
 
-  s.add_runtime_dependency('nokogiri', ['~> 1.6'])
+  s.add_runtime_dependency('nokogiri', ['~> 1.7'])
 end
