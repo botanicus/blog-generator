@@ -22,9 +22,9 @@ title: 'Hello world!'
 tags: ['Hello world', 'Test']
 ---
 
-<div id="excerpt">
+<p id="excerpt">
   Excerpt
-</div>
+</p>
 
 
 <h1>Hello world!</h1>
