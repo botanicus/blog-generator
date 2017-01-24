@@ -1,2 +1,4 @@
 - Write tests, add to Travis.
 - Update README.
+- Generate assets by parsing the document, no explicit spec.
+- GH markdown including source code support.
