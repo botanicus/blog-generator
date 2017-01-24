@@ -1,0 +1,7 @@
+- Revert commits that reuse previously generated dir.
+- Add --with-drafts=drafts/
+- Add arg publish [slug] to move the article from drafts/slug.ext to posts/YYYY-mm-dd-slug.ext and set published_at.
+- Add arg update [slug] to set updated_at of posts/*slug*.
+- Add arg draft [slug] to create a new draft from a template and open it in $EDITOR.
+- Build dependencies from <a>, fail if not present, add "links" to JSON so they can be preload.
+- Write tests, add to Travis.
