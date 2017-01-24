@@ -85,7 +85,10 @@ module BlogGenerator
     end
 
     def as_json
-      @metadata.merge(body: body)
+      @metadata.merge(body: body).tap do |metadata|
+        metadata[:published_at] && metadata[:published_at] = DateTime.parse(metadata[:published_at])
+        metadata[:updated_at]   && metadata[:updated_at]   = DateTime.parse(metadata[:updated_at])
+      end
     end
 
     def to_json(*args)
