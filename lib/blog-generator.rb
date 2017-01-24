@@ -42,6 +42,11 @@ module BlogGenerator
     end
 
     def validate!
+      self.validate_digest!
+      self.validate_linked_posts!
+    end
+
+    def validate_digest!
       @posts.each do |post|
         next if post.metadata[:draft]
 
@@ -50,6 +55,16 @@ module BlogGenerator
 
         if body_digest != post.metadata[:digest]
           warn "WARNING: The MD5 digest of the body of #{post.slug} changed. You should either acknowledge so by running the update command or dismiss it by running the ignore_update command."
+        end
+      end
+    end
+
+    def validate_linked_posts!
+      @posts.each do |post|
+        post.links.each do |link|
+          unless @posts.any? { |post| post.metadata[:path] == link }
+            raise "Post #{post.slug} links #{link}, but there is no such post."
+          end
         end
       end
     end

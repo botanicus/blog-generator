@@ -1,3 +1,2 @@
-- generate: Build dependencies from <a>, fail if not present, add "links" to JSON so they can be preload.
 - Write tests, add to Travis.
 - Update README.

@@ -25,6 +25,7 @@ module BlogGenerator
       @metadata.merge!(slug: slug)
       @metadata.merge!(excerpt: excerpt)
       @metadata.merge!(path: "/posts/#{slug}") ### TODO: some routing config.
+      @metadata.merge!(links: self.links)
 
       @metadata[:tags].map! do |tag|
         slug = generate_slug(tag)
@@ -107,6 +108,12 @@ module BlogGenerator
 
 #{self.body}
       EOF
+    end
+
+    def links
+      nokogiri_raw_document.css('a').map do |anchor|
+        anchor.attribute('href').value
+      end.uniq
     end
 
     private
