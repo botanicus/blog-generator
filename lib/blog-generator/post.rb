@@ -41,7 +41,7 @@ module BlogGenerator
 
     def load_metadata
       self.raw_metadata.reduce(Hash.new) do |buffer, (slug, value)|
-        buffer.merge(slug.to_sym => value.dup)
+        buffer.merge(slug.to_sym => try_to_dup(value))
       end
     end
 
@@ -124,6 +124,13 @@ module BlogGenerator
       match = File.basename(path).match(REGEXP)
       published_on = match[1] ? Date.parse(match[1]).to_time.utc : nil
       [published_on, match[3], match[4].to_sym]
+    end
+
+    # true and some others cannot be cloned.
+    def try_to_dup(value)
+      value.dup
+    rescue TypeError
+      value
     end
   end
 end
