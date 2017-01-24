@@ -1,6 +1,6 @@
 # https://docs.travis-ci.com/user/languages/ruby
 language: ruby
 rvm:
-  - 2.4
+  - 2.4.0
 script:
   - bundle exec rspec
