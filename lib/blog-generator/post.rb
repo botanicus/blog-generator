@@ -80,7 +80,7 @@ module BlogGenerator
     def excerpt
       @excerpt ||= begin
         document = nokogiri_raw_document.dup
-        document.css('#excerpt').inner_html.sub(/\s*(.+)\s*/, '\1')
+        document.css('#excerpt').inner_html.sub(/^\s*(.*)\s*$/, '\1').chomp
       end
     end
 
@@ -97,14 +97,13 @@ module BlogGenerator
         buffer.merge(key.to_s => value)
       end
 
+      excerpt = self.excerpt.empty? ? %Q{<p id="excerpt">\n</p>} : %Q{<p id="excerpt">\n  #{self.excerpt}\n</p>}
       metadata = self.raw_metadata.merge(extra_metadata)
       <<-EOF
 #{metadata.map { |key, value| "#{key}: #{value}"}.join("\n")}
 ---
 
-<p id="excerpt">
-  #{self.excerpt}
-</p>
+#{excerpt}
 
 #{self.body}
       EOF
