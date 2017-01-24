@@ -35,6 +35,7 @@ site = OpenStruct.new(File.exist?(site_defaults_path) ? YAML.load_file(site_defa
 generator = BlogGenerator::Generator.parse(site, posts_dir, include_drafts ? drafts_dir : false)
 
 # Generate.
+generator.validate!
 
 def file(path, content)
   puts "~ #{path}"

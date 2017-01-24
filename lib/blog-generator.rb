@@ -1,3 +1,4 @@
+require 'digest'
 require 'blog-generator/post'
 require 'blog-generator/post_list'
 
@@ -37,6 +38,19 @@ module BlogGenerator
         end
 
         buffer
+      end
+    end
+
+    def validate!
+      @posts.each do |post|
+        next if post.metadata[:draft]
+
+        # copied from cli/update.rb
+        body_digest = Digest::MD5.hexdigest(post.raw_body) # Raw body, so it's with the excerpt as well.
+
+        if body_digest != post.metadata[:digest]
+          warn "WARNING: The MD5 digest of the body of #{post.slug} changed. You should either acknowledge so by running the update command or dismiss it by running the ignore_update command."
+        end
       end
     end
   end
