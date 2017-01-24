@@ -2,18 +2,32 @@
 
 [![Build Status](https://travis-ci.org/botanicus/blog-generator.svg?branch=master)](https://travis-ci.org/botanicus/blog-generator)
 
-Few years back we used to use all the fancy static site generators for building a blog, so the blog could have layouts, tags, pagination and other features. With the arrival of frontend frameworks such as AngularJS, this is no longer necessary.
-
-We can generate a static JSON API and let AngularJS handle the rest.
+Blog-generator is a static site generator that generates only JSON files that can
+be consumed from a framework such as React.js. Think Nanoc but for fake APIs.
 
 # Usage
 
 gem install blog-generator
 gem install redcarpet # If you are going to use markdown.
-mkdir botanicus.me
-cd botanicus.me
-mkdir posts
-blog-generator.rb posts api
+mkdir myblog.com
+cd myblog.com
+blog-generator.rb draft hello-world # Optionally hello-world.md, otherwise defaults to .html.
+blog-generator.rb publish hello-world
+blog-generator.rb generate api.myblog.com
+
+## Development
+
+To include drafts in your output JSON:
+
+```
+blog-generator.rb draft my-draft
+blog-generator.rb generate api.myblog.com --include-drafts
+```
+
+## Updating posts
+
+If you updated either excerpt or body of a post, the digest will no longer match
+and you will get a warning upon running generate. You can either run `blog-generator.rb update my-post` to add `updated_at` timestamp and update the digest or `blog-generator.rb ignore_update my-post` to dismiss the update and only regenerate the digest.
 
 # Post structure
 
@@ -25,7 +39,6 @@ tags: ['Hello world', 'Test']
 <p id="excerpt">
   Excerpt
 </p>
-
 
 <h1>Hello world!</h1>
 <p>
