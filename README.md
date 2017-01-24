@@ -1,5 +1,7 @@
 # About
 
+[![Build Status](https://travis-ci.org/botanicus/blog-generator.svg?branch=master)](https://travis-ci.org/botanicus/blog-generator)
+
 Few years back we used to use all the fancy static site generators for building a blog, so the blog could have layouts, tags, pagination and other features. With the arrival of frontend frameworks such as AngularJS, this is no longer necessary.
 
 We can generate a static JSON API and let AngularJS handle the rest.
