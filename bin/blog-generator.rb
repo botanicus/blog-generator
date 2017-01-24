@@ -41,7 +41,6 @@ end
 
 # Parse the posts.
 site = OpenStruct.new(File.exist?(path) ? YAML.load_file(path) : Hash.new)
-site.feed = [site.base_url, 'posts.atom'].join('/')
 generator = BlogGenerator::Generator.parse(site, POSTS_DIR, OLD_POSTS)
 
 # Generate.
@@ -57,12 +56,6 @@ Dir.chdir(OUTPUT_BASE_PATH) do
   # GET /metadata.json
   # TODO: Refactor this, it's evil.
   file 'metadata.json', JSON.pretty_generate(site.instance_variable_get(:@table))
-
-  # GET /posts.atom
-  if generator.posts.any?
-    feed = BlogGenerator::Feed.new(site, generator.posts, 'posts.atom')
-    file 'posts.atom', feed.render
-  end
 
   # GET /api/posts.json
   # This calls PostList#to_json
@@ -82,10 +75,6 @@ Dir.chdir(OUTPUT_BASE_PATH) do
     # GET /api/tags/doxxu.json
     body = {tag: tag, posts: posts}
     file "tags/#{tag[:slug]}.json", JSON.pretty_generate(body)
-
-    # GET /api/tags/doxxu.atom
-    feed = BlogGenerator::Feed.new(site, posts, "#{tag[:slug]}.atom")
-    file "tags/#{tag[:slug]}.atom", feed.render
   end
 end
 

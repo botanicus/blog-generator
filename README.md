@@ -48,16 +48,6 @@ tags: ['Hello world', 'Test']
 - `/tags.json`
 - `/tags/:slug.json`
 
-# Feeds
-
-```html
-<!-- Global feed. -->
-<link href="{{blog.feed_url}}" type="application/atom+xml" rel="alternate" title="{{blog.title}}" />
-
-<!-- Per-tag feeds. -->
-<link href="{{tag.feed_url}}" type="application/atom+xml" rel="alternate" title="{{tag.title}}" />
-```
-
 # Status
 
 It works, but it needs polishing.

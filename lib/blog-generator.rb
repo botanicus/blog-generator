@@ -3,8 +3,6 @@ require 'json'
 require 'blog-generator/post'
 require 'blog-generator/post_list'
 
-require 'blog-generator/feed'
-
 module BlogGenerator
   class Generator
     def self.parse(site, posts_dir, old_posts)
