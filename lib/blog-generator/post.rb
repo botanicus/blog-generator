@@ -7,12 +7,19 @@ module BlogGenerator
   class Post
     REGEXP = /^((\d{4}-\d{2}-\d{2})-)?(.+)\.(html|md)$/
 
-    attr_reader :site, :metadata, :format, :published_on, :updated_at
+    [:slug, :tags, :updated_at].each do |attribute|
+      define_method(attribute) do
+        @metadata[attribute]
+      end
+    end
+
+    attr_reader :site, :metadata, :format
     def initialize(site, path)
       # TODO: metadata so we can construct url (base_url + relative) AND merge author
       @site, @path = site, File.expand_path(path)
 
-      @published_on, slug, @format = parse_path(path)
+      # TODO: Bring back .md from adapters/markdown.rb
+      published_on, slug, format = parse_path(path)
 
       @metadata = self.load_metadata
       @metadata.merge!(slug: slug)

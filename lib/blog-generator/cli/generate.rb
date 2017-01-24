@@ -2,41 +2,36 @@ require 'ostruct'
 require 'fileutils'
 require 'blog-generator'
 
-POSTS_DIR, OUTPUT_BASE_PATH = ARGV.map { |i| i.chomp('/') }
+# Variables.
+drafts_dir = 'drafts'
+posts_dir  = 'posts'
 
-
-unless ARGV.length == 2
-  abort "Usage: #{$0} [posts dir] [output base path]"
+# Main.
+unless ARGV.length == 1
+  abort 'The generate command needs only output directory as an argument.'
 end
 
-unless File.directory?(POSTS_DIR)
-  abort "Posts directory #{POSTS_DIR} doesn't exist."
+output_dir = ARGV.shift.chomp('/')
+
+unless File.directory?(posts_dir)
+  abort "Posts directory #{posts_dir} doesn't exist."
 end
 
-if Dir.exists?("#{OUTPUT_BASE_PATH}_prev") # If it does, the last build crashed.
-  puts "~ Last build crashed. Reusing #{OUTPUT_BASE_PATH}_prev."
-elsif (! Dir.exists?("#{OUTPUT_BASE_PATH}_prev")) && Dir.exists?(OUTPUT_BASE_PATH) # otherwise it's first run.
-  FileUtils.mv(OUTPUT_BASE_PATH, "#{OUTPUT_BASE_PATH}_prev") # So we don't get any artifacts.
+unless Dir.exists?(output_dir)
+  puts "~ #{output_dir} doesn't exist, creating."
+  Dir.mkdir(output_dir)
+else
+  FileUtils.rm_rf("#{output_dir}/*")
 end
 
-unless Dir.exists?(OUTPUT_BASE_PATH)
-  puts "~ #{OUTPUT_BASE_PATH} doesn't exist, creating."
-  Dir.mkdir(OUTPUT_BASE_PATH)
-end
-
-OLD_POSTS = Dir.glob("#{OUTPUT_BASE_PATH}_prev/posts/*.json").reduce(Hash.new) do |posts, path|
-  post = JSON.parse(File.read(path))
-  posts.merge(post['slug'] => post)
-end
-
-path = File.expand_path(File.join(POSTS_DIR, '..', 'defaults.yml'))
-unless File.exist?(path)
-  puts "~ Feed configuration file #{path} not found."
+site_defaults_path = File.expand_path(File.join(posts_dir, '..', 'defaults.yml'))
+unless File.exist?(site_defaults_path)
+  puts "~ Feed configuration file #{site_defaults_path} not found." # Do we still need it?
 end
 
 # Parse the posts.
-site = OpenStruct.new(File.exist?(path) ? YAML.load_file(path) : Hash.new)
-generator = BlogGenerator::Generator.parse(site, POSTS_DIR, OLD_POSTS)
+site = OpenStruct.new(File.exist?(site_defaults_path) ? YAML.load_file(site_defaults_path) : Hash.new)
+generator = BlogGenerator::Generator.parse(site, posts_dir)
 
 # Generate.
 
@@ -47,7 +42,7 @@ def file(path, content)
   end
 end
 
-Dir.chdir(OUTPUT_BASE_PATH) do
+Dir.chdir(output_dir) do
   # GET /metadata.json
   # TODO: Refactor this, it's evil.
   file 'metadata.json', JSON.pretty_generate(site.instance_variable_get(:@table))
@@ -72,5 +67,3 @@ Dir.chdir(OUTPUT_BASE_PATH) do
     file "tags/#{tag[:slug]}.json", JSON.pretty_generate(body)
   end
 end
-
-FileUtils.rm_rf("#{OUTPUT_BASE_PATH}_prev") # Has to be forced, otherwise fails on the first run.

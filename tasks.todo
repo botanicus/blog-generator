@@ -1,4 +1,5 @@
 - Revert commits that reuse previously generated dir.
+- generate: Support drafts via --include-drafts.
 - generate: Build dependencies from <a>, fail if not present, add "links" to JSON so they can be preload.
 - generate: warn or fail if the digest doesn't match actual.
 - Write tests, add to Travis.
