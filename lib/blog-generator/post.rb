@@ -7,7 +7,7 @@ module BlogGenerator
   class Post
     REGEXP = /^((\d{4}-\d{2}-\d{2})-)?(.+)\.(html|md)$/
 
-    [:slug, :tags, :updated_at].each do |attribute|
+    [:slug, :tags, :published_at, :updated_at].each do |attribute|
       define_method(attribute) do
         @metadata[attribute]
       end
