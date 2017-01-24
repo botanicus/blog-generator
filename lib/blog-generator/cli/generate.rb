@@ -7,11 +7,12 @@ drafts_dir = 'drafts'
 posts_dir  = 'posts'
 
 # Main.
-unless ARGV.length == 1
-  abort 'The generate command needs only output directory as an argument.'
+unless (1..2).include?(ARGV.length)
+  abort 'The generate command needs only output directory as an argument with --include-drafts being optional.'
 end
 
 output_dir = ARGV.shift.chomp('/')
+include_drafts = true if ARGV.shift == '--include-drafts'
 
 unless File.directory?(posts_dir)
   abort "Posts directory #{posts_dir} doesn't exist."
@@ -31,7 +32,7 @@ end
 
 # Parse the posts.
 site = OpenStruct.new(File.exist?(site_defaults_path) ? YAML.load_file(site_defaults_path) : Hash.new)
-generator = BlogGenerator::Generator.parse(site, posts_dir)
+generator = BlogGenerator::Generator.parse(site, posts_dir, include_drafts ? drafts_dir : false)
 
 # Generate.
 

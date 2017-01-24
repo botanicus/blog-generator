@@ -8,6 +8,15 @@ module BlogGenerator
         posts.push(Post.new(site, path))
       end
 
+      if drafts_dir
+        Dir.glob("#{drafts_dir}/*.{html,md}").each do |path|
+          draft = Post.new(site, path)
+          draft.metadata[:draft] = true
+          draft.metadata[:published_at] = Time.not.utc # Let's emulate it so we get expected attributes in development.
+          posts.push(draft)
+        end
+      end
+
       published_posts = posts.select { |post| ! post.metadata[:draft] }
 
       published_posts.sort! do |a, b|

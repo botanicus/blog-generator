@@ -1,5 +1,6 @@
 # Variables.
 drafts_dir = 'drafts'
+posts_dir  = 'posts'
 
 # Main.
 unless ARGV.length == 1
@@ -19,7 +20,9 @@ end
 draft_path = "#{drafts_dir}/#{slug}.#{format}"
 
 if File.exist?(draft_path)
-  abort "Draft #{draft_path} already exists."
+  abort "ERROR: Draft #{draft_path} already exists."
+elsif post = Dir.glob("#{posts_dir}/*-#{slug}.*").first
+  abort "ERROR: Slug #{slug} is already being used by #{post}."
 end
 
 # The template is actually the same for both HTML and MD.
