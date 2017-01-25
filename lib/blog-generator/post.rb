@@ -73,8 +73,27 @@ module BlogGenerator
       @body ||= begin
         document = nokogiri_raw_document.dup
         document.css('#excerpt').remove
+        document.css('img[src^="/assets/"]').each do |img|
+          absolute_url = img.attribute('src').value
+          asset_path   = "..#{absolute_url}" # This is extremely shakey, it depends on us being in api.botanicus.me.
+          if File.exists?(asset_path)
+            img['src'] = image_binary_data(asset_path)
+          else
+            raise "Asset #{asset_path} doesn't exist."
+          end
+        end
         document.css('body').inner_html.strip
       end
+    end
+
+    def image_binary_data(asset_path)
+      require 'base64'
+
+      extension    = File.extname(asset_path)[1..-1]
+      binary_data  = File.read(asset_path)
+      encoded_data = Base64.encode64(binary_data)
+
+      "data:image/#{extension};base64,#{encoded_data}"
     end
 
     def excerpt
@@ -85,7 +104,7 @@ module BlogGenerator
     end
 
     def as_json
-      @metadata.merge(body: body).tap do |metadata|
+      @metadata.merge(body: self.body).tap do |metadata|
         metadata[:published_at] && metadata[:published_at] = DateTime.parse(metadata[:published_at])
         metadata[:updated_at]   && metadata[:updated_at]   = DateTime.parse(metadata[:updated_at])
       end

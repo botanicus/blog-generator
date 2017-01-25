@@ -44,6 +44,10 @@ tags: ['Hello world', 'Test']
 <p>
   Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta quibusdam necessitatibus tempore ullam incidunt amet omnis, veritatis dicta quisquam accusamus at provident vel facere corporis sed fugiat cumque. Consequuntur, necessitatibus!
 </p>
+
+<!-- This assumes assets/hello-world/hello-kitty.png -->
+<img src="/assets/hello-world/hello-kitty.png" />
+<caption>Hello kitty!</caption>
 ```
 
 ## Assumptions
