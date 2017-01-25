@@ -62,6 +62,7 @@ module BlogGenerator
     def validate_linked_posts!
       @posts.each do |post|
         post.links.each do |link|
+          next unless post.metadata[:path].start_with?('/posts/')
           unless @posts.any? { |post| post.metadata[:path] == link }
             raise "Post #{post.slug} links #{link}, but there is no such post."
           end

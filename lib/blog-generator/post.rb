@@ -132,7 +132,7 @@ module BlogGenerator
     end
 
     def links
-      nokogiri_raw_document.css('a').map do |anchor|
+      nokogiri_raw_document.css('a[href^="/posts/"]').map do |anchor|
         anchor.attribute('href').value
       end.uniq
     end
