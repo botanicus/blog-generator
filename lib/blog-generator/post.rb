@@ -2,6 +2,7 @@ require 'json'
 require 'date'
 require 'yaml'
 require 'nokogiri'
+require 'cgi'
 
 module BlogGenerator
   class Post
@@ -71,19 +72,28 @@ module BlogGenerator
 
     def body
       @body ||= begin
-        document = nokogiri_raw_document.dup
-        document.css('#excerpt').remove
-        document.css('img[src^="/assets/"]').each do |img|
-          absolute_url = img.attribute('src').value
-          asset_path   = "..#{absolute_url}" # This is extremely shakey, it depends on us being in api.botanicus.me.
-          if File.exists?(asset_path)
-            img['src'] = image_binary_data(asset_path)
-          else
-            raise "Asset #{asset_path} doesn't exist."
-          end
-        end
-        document.css('body').inner_html.strip
+        process_body(nokogiri_raw_document.dup)
       end
+    end
+
+    def process_body(document)
+      document.css('#excerpt').remove
+      document.css('img[src^="/assets/"]').each do |img|
+        absolute_url = img.attribute('src').value
+        asset_path   = "..#{absolute_url}" # This is extremely shakey, it depends on us being in api.botanicus.me.
+        if File.exists?(asset_path)
+          img['src'] = image_binary_data(asset_path)
+        else
+          raise "Asset #{asset_path} doesn't exist."
+        end
+      end
+
+      document.css('pre').each do |code_section|
+        require 'pry'; binding.pry
+        code_section.inner_html = CGI.escapeHTML(code_section.inner_html)
+      end
+
+      document.css('body').inner_html.strip
     end
 
     def image_binary_data(asset_path)
