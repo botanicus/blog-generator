@@ -88,12 +88,22 @@ module BlogGenerator
         end
       end
 
-      document.css('pre').each do |code_section|
-        require 'pry'; binding.pry
-        code_section.inner_html = CGI.escapeHTML(code_section.inner_html)
-      end
-
       document.css('body').inner_html.strip
+    end
+
+    def post_processed_body
+      @post_processed_body ||= post_process_body(self.body.to_s)
+    end
+
+    # This is a terrible hack to make unescaped code possible.
+    def post_process_body(text)
+      regexp = /<code lang="(\w+)">\n?(.*?)<\/code>/m
+      original_body_matches = self.raw_body.scan(regexp)
+
+      text.gsub(regexp).with_index do |pre, index|
+        language, code = original_body_matches[index]
+        "<pre><code class=\"#{language}\">#{CGI.escapeHTML(code)}</code></pre>"
+      end
     end
 
     def image_binary_data(asset_path)
@@ -114,7 +124,7 @@ module BlogGenerator
     end
 
     def as_json
-      @metadata.merge(body: self.body).tap do |metadata|
+      @metadata.merge(body: self.post_processed_body).tap do |metadata|
         metadata[:published_at] && metadata[:published_at] = DateTime.parse(metadata[:published_at])
         metadata[:updated_at]   && metadata[:updated_at]   = DateTime.parse(metadata[:updated_at])
       end
@@ -137,7 +147,7 @@ module BlogGenerator
 
 #{excerpt}
 
-#{self.body}
+#{self.post_processed_body}
       EOF
     end
 
