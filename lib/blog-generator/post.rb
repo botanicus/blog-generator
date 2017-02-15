@@ -99,8 +99,10 @@ module BlogGenerator
     def post_process_body(text)
       regexp = /<code lang="(\w+)"(?: file="([^"]+)")?>\n?(.*?)<\/code>/m
       original_body_matches = self.raw_body.scan(regexp)
+      p original_body_matches.flatten.map { |i| i && i[0..50] } unless original_body_matches.empty?
 
-      text.gsub(regexp).with_index do |pre, index|
+      text.gsub(regexp).with_index do |code_tag, index|
+        p code_tag
         language, file, code = original_body_matches[index]
         if file
           "<figure><figcaption class='filepath'>#{file}</figcaption><pre><code class=\"#{language}\">#{CGI.escapeHTML(code)}</code></pre></figure>"
