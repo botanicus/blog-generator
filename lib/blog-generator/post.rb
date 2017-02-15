@@ -97,12 +97,16 @@ module BlogGenerator
 
     # This is a terrible hack to make unescaped code possible.
     def post_process_body(text)
-      regexp = /<code lang="(\w+)">\n?(.*?)<\/code>/m
+      regexp = /<code lang="(\w+)"(?: file="([^"]+)")?>\n?(.*?)<\/code>/m
       original_body_matches = self.raw_body.scan(regexp)
 
       text.gsub(regexp).with_index do |pre, index|
-        language, code = original_body_matches[index]
-        "<pre><code class=\"#{language}\">#{CGI.escapeHTML(code)}</code></pre>"
+        language, file, code = original_body_matches[index]
+        if file
+          "<figure><figcaption class='filepath'>#{file}</figcaption><pre><code class=\"#{language}\">#{CGI.escapeHTML(code)}</code></pre></figure>"
+        else
+          "<pre><code class=\"#{language}\">#{CGI.escapeHTML(code)}</code></pre>"
+        end
       end
     end
 
