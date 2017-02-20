@@ -19,5 +19,7 @@ else
 
 Posts dir is assumed to be posts/ in the same directory as the output base path.
 Drafts dir is assumed to be drafts/ in the same directory as the output base path.
+Assets dir is assumented to be assets/ in the same directory as the output base path.
+  Images are automatically in-lined.
   EOF
 end

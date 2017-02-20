@@ -1,5 +1,6 @@
 title: 'Second post'
 tags: ['Test some/thing']
+published_at: 24/01/2017 23:14
 ---
 
 <div id="excerpt">

@@ -3,7 +3,7 @@ require 'integration/spec_helper'
 
 describe '/tags.json' do
   let(:tags) do
-    JSON.parse(File.read('spec/output/tags.json'))
+    JSON.parse(File.read('spec/data/output/tags.json'))
   end
 
   it "is a JSON array of tags" do

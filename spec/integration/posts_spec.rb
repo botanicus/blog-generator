@@ -3,7 +3,7 @@ require 'integration/spec_helper'
 
 describe '/posts.json' do
   let(:posts) do
-    JSON.parse(File.read('spec/output/posts.json'))
+    JSON.parse(File.read('spec/data/output/posts.json'))
   end
 
   it "is a JSON array of posts" do
