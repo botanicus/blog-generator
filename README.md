@@ -55,7 +55,7 @@ tags: ['Hello world', 'Test']
 ## Assumptions
 
 - Metadata `title` and optionally `tags`.
-- Metadata `draft: true` will exclude the post.
+- Metadata `draft: true` will exclude the post. (However the workflow with drafts is to use `blog-generator draft slug` and then `blog-generator publish path`)
 - Any other metadata can be added and will be accessible in the resulting JSON.
 - Body has `#excerpt`.
 - Format `posts/:published_at-:slug.:format`.

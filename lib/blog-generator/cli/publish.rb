@@ -8,11 +8,20 @@ posts_dir  = 'posts'
 
 # Main.
 unless ARGV.length == 1
-  abort 'ERROR: The draft command needs only slug as an argument.'
+  # abort 'ERROR: The draft command needs only slug as an argument.'
+  abort "ERROR: The draft command needs the draft path such as: drafts/hello-world.md"
 end
 
-slug = ARGV.shift
-draft_path = Dir.glob("#{drafts_dir}/#{slug}.{html,md}").first
+# slug = ARGV.shift
+# draft_path = Dir.glob("#{drafts_dir}/#{slug}.{html,md}").first
+draft_path = ARGV.shift
+
+slug = draft_path.split('/').last.sub(/\.(html|md)$/, '')
+
+if draft_path.match(/\/\d{4}-\d{2}-\d{2}-/)
+  abort "The date will be set when you publish. Just stick to the base slug."
+end
+# TODO: if there is draft: true metadata, remove.
 
 if post = Dir.glob("#{posts_dir}/*-#{slug}.{html,md}").first
   abort "ERROR: Post #{post} has already been published."
