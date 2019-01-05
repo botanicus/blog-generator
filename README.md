@@ -7,6 +7,7 @@ be consumed from a framework such as React.js. Think Nanoc but for fake APIs.
 
 # Usage
 
+```
 gem install blog-generator
 gem install redcarpet # If you are going to use markdown.
 mkdir myblog.com
@@ -14,6 +15,7 @@ cd myblog.com
 blog-generator.rb draft hello-world # Optionally hello-world.md, otherwise defaults to .html.
 blog-generator.rb publish hello-world
 blog-generator.rb generate api.myblog.com
+```
 
 ## Development
 
