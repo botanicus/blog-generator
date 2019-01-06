@@ -90,7 +90,7 @@ module BlogGenerator
         # absolute_url = image.attribute('src').value
         # asset_path   = "..#{absolute_url}" # This is extremely shakey, it depends on us being in api.botanicus.me.
         if File.exists?(asset_path)
-          asset_url = "/assets/#{Time.now.strftime('%Y-%m-%d')}-#{slug}/#{img.attribute('name').value}"
+          asset_url = "/assets/#{Time.now.strftime('%Y-%m-%d')}-#{slug}/#{name}"
           img['src'] = asset_url
         else
           raise "Asset #{asset_path} doesn't exist. Expected in drafts/#{slug} directory"
