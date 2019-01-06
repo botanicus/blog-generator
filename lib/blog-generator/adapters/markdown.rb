@@ -20,6 +20,7 @@ end
   # Maybe rename body -> raw_body and to_html -> body.
   # This is being rewritten from initialize!
   def body(format = @format)
+    require 'pry'; binding.pry ###
     case format
     when :md
       @body ||= convert_markdown(self.body(:html)) # I don't think this would work with ||= (which we're using so we can rewrite @body = in initialize.)

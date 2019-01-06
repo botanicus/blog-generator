@@ -28,7 +28,7 @@ module BlogGenerator
       @metadata.merge!(path: "/posts/#{slug}") ### TODO: some routing config.
       @metadata.merge!(links: self.links)
 
-      @metadata[:tags].map! do |tag|
+      @metadata[:tags]&.map! do |tag|
         slug = generate_slug(tag)
         {title: tag, slug: slug, path: "/tags/#{slug}"}
       end
@@ -78,13 +78,22 @@ module BlogGenerator
 
     def process_body(document)
       document.css('#excerpt').remove
-      document.css('img[src^="/assets/"]').each do |img|
-        absolute_url = img.attribute('src').value
-        asset_path   = "..#{absolute_url}" # This is extremely shakey, it depends on us being in api.botanicus.me.
+      document.css('img[src]').each do |img|
+        abort "Use <img name='basename.png' /> for drafts/#{slug}/basename.png"
+        # FIXME: here an empty file is already created (while) it keeps the draft, don't create an empty file.
+      end
+
+      document.css('img[name]').each do |img|
+        name = img.attribute('name').value
+        img.remove_attribute('name')
+        asset_path = File.join('drafts', slug, name)
+        # absolute_url = image.attribute('src').value
+        # asset_path   = "..#{absolute_url}" # This is extremely shakey, it depends on us being in api.botanicus.me.
         if File.exists?(asset_path)
-          img['src'] = image_binary_data(asset_path)
+          asset_url = "/assets/#{Time.now.strftime('%Y-%m-%d')}-#{slug}/#{img.attribute('name').value}"
+          img['src'] = asset_url
         else
-          raise "Asset #{asset_path} doesn't exist."
+          raise "Asset #{asset_path} doesn't exist. Expected in drafts/#{slug} directory"
         end
       end
 
@@ -112,15 +121,15 @@ module BlogGenerator
       end
     end
 
-    def image_binary_data(asset_path)
-      require 'base64'
+    # def image_binary_data(asset_path)
+    #   require 'base64'
 
-      extension    = File.extname(asset_path)[1..-1]
-      binary_data  = File.read(asset_path)
-      encoded_data = Base64.encode64(binary_data)
+    #   extension    = File.extname(asset_path)[1..-1]
+    #   binary_data  = File.read(asset_path)
+    #   encoded_data = Base64.encode64(binary_data)
 
-      "data:image/#{extension};base64,#{encoded_data}"
-    end
+    #   "data:image/#{extension};base64,#{encoded_data}"
+    # end
 
     def excerpt
       @excerpt ||= begin

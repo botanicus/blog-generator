@@ -48,3 +48,13 @@ File.open(post_path, 'w') do |file|
 end
 
 File.unlink(draft_path)
+
+source_img_dir = File.join(drafts_dir, post.slug)
+target_img_dir = File.join('content/assets', "#{date_slug}-#{post.slug}")
+
+if File.directory?(source_img_dir)
+  system("mkdir content/assets") unless File.directory?('content/assets')
+  command = "mv #{source_img_dir} #{target_img_dir}"
+  puts "SH: #{command}"
+  puts %x(#{command})
+end
