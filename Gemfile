@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'redcarpet'
 gemspec
 
 group(:spec) do

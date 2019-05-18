@@ -1,5 +1,0 @@
-Tasks:
-- Update README.
-- Generate assets by parsing the document, no explicit spec.
-- GH markdown including source code support.
-- Blog-generator: fix swallowing of the last <code> block.
