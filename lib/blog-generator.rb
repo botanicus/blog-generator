@@ -1,5 +1,8 @@
+# The 'drop-area style' is good, but how do you update posts?
+# What if there's never any HTML, rather it's all done on the frontend?
+# So we generate indices and what not, but the format stays markdown?
+#
 # require 'digest'
-require 'redcarpet'
 require 'blog-generator/post'
 
 module BlogGenerator
@@ -13,6 +16,7 @@ module BlogGenerator
     def validate
       self.validate_one_post_file
       self.validate_is_valid_markdown
+      self.validate_image_paths
       true
     end
 
@@ -20,17 +24,8 @@ module BlogGenerator
       Dir.glob("#{@content_directory}/*.md").first
     end
 
-    def document
-      @document ||= begin
-        parser = Redcarpet::Markdown.new(Redcarpet::Render::HTML, footnotes: true)
-        parser.render(File.read(self.main_file))
-      end
-    end
-
-    def image_paths
-      self.document.css('img').map do |element|
-        element.attr('src').to_s
-      end
+    def post
+      @post ||= Post.new(File.read(self.main_file))
     end
 
     protected
