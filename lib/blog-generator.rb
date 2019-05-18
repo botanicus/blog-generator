@@ -8,16 +8,9 @@ require 'blog-generator/post'
 module BlogGenerator
   class ValidationError < StandardError; end
 
-  class ContentDirectoryValidator
+  class ContentDirectoryHandler
     def initialize(content_directory)
       @content_directory = content_directory
-    end
-
-    def validate
-      self.validate_one_post_file
-      self.validate_is_valid_markdown
-      self.validate_image_paths
-      true
     end
 
     def main_file
@@ -26,6 +19,15 @@ module BlogGenerator
 
     def post
       @post ||= Post.new(File.read(self.main_file))
+    end
+  end
+
+  class ContentDirectoryValidator < ContentDirectoryHandler
+    def validate
+      self.validate_one_post_file
+      self.validate_is_valid_markdown
+      self.validate_image_paths
+      true
     end
 
     protected
@@ -37,13 +39,11 @@ module BlogGenerator
     end
 
     def validate_is_valid_markdown
-      self.document
-    rescue => error
-      raise ValidationError, "Cannot parse #{self.main_file}: #{error.class}: #{error.message}"
+      self.post.validate
     end
 
     def validate_image_paths
-      self.image_paths.each do |src|
+      self.post.image_paths.each do |src|
         unless File.exist?(File.join(@content_directory, src))
           raise ValidationError, "Image #{src} doesn't exist in #{@content_directory}"
         end
@@ -51,9 +51,13 @@ module BlogGenerator
     end
   end
 
-  class Generator
+  class Generator < ContentDirectoryHandler
     def initialize(content_directory)
       @content_directory = content_directory
+    end
+
+    def post
+      @post ||= Post.new(File.read(self.main_file))
     end
 
     def generate

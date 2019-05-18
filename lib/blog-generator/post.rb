@@ -4,15 +4,15 @@ require 'nokogiri'
 module BlogGenerator
   class Post
     def initialize(markdown_with_header)
-      @document = document
+      @markdown_with_header = markdown_with_header
     end
 
     def title
-      @document.find('h1').inner_text
+      self.document.css('h1').inner_text
     end
 
     def excerpt
-      @document.find('p:first').inner_text
+      self.document.css('p:first').inner_text
     end
 
     def header
@@ -24,12 +24,19 @@ module BlogGenerator
     end
 
     def markdown_text
+      if @markdown_with_header.match(/\n---\s*\n/)
+        lines = @markdown_with_header.split("\n")
+        index = lines.index('---')
+        lines[(index + 1)..-1].join("\n")
+      else
+        @markdown_with_header
+      end
     end
 
     def html_text
       @html_text ||= begin
         parser = Redcarpet::Markdown.new(Redcarpet::Render::HTML, footnotes: true)
-        parser.render(File.read(self.markdown_text))
+        parser.render(self.markdown_text)
       end
     end
 
@@ -44,11 +51,17 @@ module BlogGenerator
     end
 
     def as_json
-      {title: self.title, excerpt: self.excerpt, body: self.body}
+      {title: self.title, excerpt: self.excerpt, body: self.markdown_text}
     end
 
-    protected
-    def parse
+    def validate
+      unless self.document.css('h1').length == 1
+        raise ValidationError, "There was supposed to be exactly 1 <h1> element"
+      end
+
+      unless self.excerpt
+        raise ValidationError, "Excerpt hasn't been found"
+      end
     end
   end
 end
