@@ -1,5 +1,6 @@
 require 'redcarpet'
 require 'nokogiri'
+require 'yaml'
 
 module BlogGenerator
   class Post
