@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    blog-generator (0.5)
+    blog-generator (1.0.0)
       nokogiri (~> 1.10)
       redcarpet (~> 3.4)
 
