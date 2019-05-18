@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
-unless ARGV.length == 1 && Dir.exist?(ARGV.first)
-  abort("Usage:  #{$0} [content_directory]")
+unless ARGV.length == 2 && Dir.exist?(ARGV.first)
+  abort("Usage:  #{$0} [content_directory] [output_directory]")
 end
 
-content_directory = ARGV.first
+content_directory, output_directory = ARGV
 validator = BlogGenerator::ContentDirectoryValidator.new(content_directory)
 begin
   validator.validate
@@ -14,7 +14,7 @@ end
 
 puts "~ Validation successful."
 
-generator = BlogGenerator::Generator.new(content_directory)
+generator = BlogGenerator::Generator.new(content_directory, output_directory)
 begin
   generator.generate
 rescue => error

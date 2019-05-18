@@ -18,7 +18,8 @@ module BlogGenerator
     end
 
     def post
-      @post ||= Post.new(File.read(self.main_file))
+      slug = File.basename(self.main_file).split('.').last
+      @post ||= Post.new(slug, File.read(self.main_file))
     end
   end
 
@@ -52,16 +53,38 @@ module BlogGenerator
   end
 
   class Generator < ContentDirectoryHandler
-    def initialize(content_directory)
+    def initialize(content_directory, output_directory)
       @content_directory = content_directory
+      @output_directory = output_directory
     end
 
-    def post
-      @post ||= Post.new(File.read(self.main_file))
+    def output_post_directory
+      File.join(@output_directory, self.output_post_basename)
+    end
+
+    def output_post_basename
+      "#{Time.now.strftime('%Y-%m-%d')}-#{self.post.slug}"
     end
 
     def generate
-      raise NotImplementedError
+      run "mkdir #{self.output_post_directory}"
+
+      Dir.glob("#{@content_directory}/*").each do |file|
+        if File.file?(file) && File.basename != File.basename(self.main_file)
+          run "mv #{file} #{self.output_post_directory}"
+        end
+      end
+
+      json = self.post.as_json.merge(publishedAt: Time.now)
+      File.open(File.join(self.output_post_directory, "#{self.post.slug}.json"), 'w') do |file|
+        file.puts(json)
+      end
+    end
+
+    private
+    def run(command)
+      puts "$ #{command}"
+      system(command)
     end
   end
 end

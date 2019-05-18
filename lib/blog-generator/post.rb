@@ -4,8 +4,9 @@ require 'yaml'
 
 module BlogGenerator
   class Post
-    def initialize(markdown_with_header)
-      @markdown_with_header = markdown_with_header
+    attr_reader :slug
+    def initialize(slug, markdown_with_header)
+      @slug, @markdown_with_header = slug, markdown_with_header
     end
 
     def title
@@ -18,7 +19,9 @@ module BlogGenerator
 
     def header
       if @markdown_with_header.match(/\n---\s*\n/)
-        YAML.parse(@markdown_with_header)
+        YAML.load(@markdown_with_header).reduce(Hash.new) do |buffer, (key, value)|
+          buffer.merge(key.to_sym => value)
+        end
       else
         Hash.new
       end
@@ -32,6 +35,10 @@ module BlogGenerator
       else
         @markdown_with_header
       end
+    end
+
+    def body
+      self.markdown_text.split("\n").reject { |line| line.match(/# #{self.title}|#{self.excerpt}/) }.join("\n").sub(/^\s*(.+)\s*$/, '\1')
     end
 
     def html_text
@@ -52,7 +59,7 @@ module BlogGenerator
     end
 
     def as_json
-      {title: self.title, excerpt: self.excerpt, body: self.markdown_text}
+      {title: self.title, excerpt: self.excerpt, body: self.body}
     end
 
     def validate
