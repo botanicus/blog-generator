@@ -1,4 +1,4 @@
-tags: ["intro"]
+tags: ["Ruby", "testing"]
 ---
 
 # Post title

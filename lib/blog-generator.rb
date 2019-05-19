@@ -1,5 +1,6 @@
 require 'json'
 require 'blog-generator/post'
+require 'blog-generator/file-system-actions'
 
 module BlogGenerator
   class ValidationError < StandardError; end
@@ -64,24 +65,19 @@ module BlogGenerator
     end
 
     def generate
-      run "mkdir #{self.output_post_directory}"
+      actions = FileSystemActions.new
+      actions << DirectoryCreateAction.new(self.output_post_directory)
 
       Dir.glob("#{@content_directory}/*").each do |file|
         if File.file?(file) && File.basename != File.basename(self.main_file)
-          run "mv #{file} #{self.output_post_directory}"
+          actions << MoveFileAction.new(file, self.output_post_directory)
         end
       end
 
       json = self.post.as_json.merge(publishedAt: Time.now).to_json
-      File.open(File.join(self.output_post_directory, "#{self.post.slug}.json"), 'w') do |file|
-        file.puts(json)
-      end
-    end
+      actions << FileWriteAction.new(File.join(self.output_post_directory, "#{self.post.slug}.json"), json)
 
-    private
-    def run(command)
-      puts "$ #{command}"
-      system(command)
+      actions
     end
   end
 end

@@ -1,7 +1,7 @@
-tags: ["intro"]
+tags: ["Ruby", "testing"]
 ---
 
-# Post title
+# Hello world
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam viverra ac leo at laoreet. Vivamus tristique pulvinar sem, in euismod odio. Curabitur ullamcorper ligula felis. Suspendisse at accumsan ante. Pellentesque convallis lorem eget metus fringilla, sit amet porttitor neque posuere. Praesent scelerisque est in lorem egestas ornare. Pellentesque ullamcorper ipsum id ante finibus gravida. Sed eget finibus tortor. Proin aliquam scelerisque rhoncus. Quisque in diam purus. Donec et tincidunt ante, sed finibus nisi.
 
 ## Heading I

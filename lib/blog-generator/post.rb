@@ -38,7 +38,9 @@ module BlogGenerator
     end
 
     def body
-      self.markdown_text.split("\n").reject { |line| line.match(/# #{self.title}|#{self.excerpt}/) }.join("\n").sub(/^\s*(.+)\s*$/, '\1')
+      self.markdown_text.split("\n").
+        reject { |line| line.match(/# #{self.title}|#{self.excerpt}/) }.
+        join("\n").sub(/^\s*(.+)\s*$/, '\1').gsub(/^#(#*) /, '\1 ')
     end
 
     def html_text
