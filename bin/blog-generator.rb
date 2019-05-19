@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'blog-generator'
+
 unless ARGV.length == 2 && Dir.exist?(ARGV.first)
   abort("Usage:  #{$0} [content_directory] [output_directory]")
 end

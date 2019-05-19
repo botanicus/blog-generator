@@ -1,14 +1,11 @@
-# The 'drop-area style' is good, but how do you update posts?
-# What if there's never any HTML, rather it's all done on the frontend?
-# So we generate indices and what not, but the format stays markdown?
-#
-# require 'digest'
+require 'json'
 require 'blog-generator/post'
 
 module BlogGenerator
   class ValidationError < StandardError; end
 
   class ContentDirectoryHandler
+    # content_directory: i. e. drop-area/, it doesn't have any name specific to the post.
     def initialize(content_directory)
       @content_directory = content_directory
     end
@@ -75,7 +72,7 @@ module BlogGenerator
         end
       end
 
-      json = self.post.as_json.merge(publishedAt: Time.now)
+      json = self.post.as_json.merge(publishedAt: Time.now).to_json
       File.open(File.join(self.output_post_directory, "#{self.post.slug}.json"), 'w') do |file|
         file.puts(json)
       end
