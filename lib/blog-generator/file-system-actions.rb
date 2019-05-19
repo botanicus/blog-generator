@@ -4,13 +4,18 @@ module BlogGenerator
       @actions = actions
     end
 
-    def <<(action)
-      unless action.respond_to?(:validate) && action.respond_to?(:commit)
-        raise TypeError, "Expected object with #validate and #commit methods, got #{action}"
-      end
+    def <<(*actions)
+      actions.each do |action|
+        unless action.respond_to?(:validate) && action.respond_to?(:commit)
+          raise TypeError, "Expected object with #validate and #commit methods, got #{action}"
+        end
 
-      @actions << action
+        @actions << action
+      end
     end
+
+    # Ruby doesn't allow using #<< with splat, that's why we need a "normal" method.
+    alias_method :push, :<<
 
     def to_a
       @actions

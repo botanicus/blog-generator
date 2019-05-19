@@ -33,7 +33,6 @@ describe BlogGenerator::Generator do
     let(:actions) { subject.generate.to_a }
 
     it "returns true" do
-      expect(actions.length).to be(2)
       expect(actions[0]).to be_kind_of(BlogGenerator::CreateDirectoryAction)
       expect(actions[0].target_directory_path).to eql("spec/data/tmp/#{Time.now.strftime('%Y-%m-%d')}-hello-world/")
 
@@ -53,6 +52,14 @@ describe BlogGenerator::Generator do
       expect(body[3]).to eql('# Heading II')
       expect(body[4]).to match(/^Vestibulum.+metus.$/)
       expect(content['publishedAt']).to match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}$/)
+
+      expect(actions[2]).to be_kind_of(BlogGenerator::FileWriteAction)
+      # TODO
+
+      expect(actions[3]).to be_kind_of(BlogGenerator::FileWriteAction)
+      # TODO
+
+      expect(actions.length).to be(5)
     end
   end
 
@@ -62,7 +69,6 @@ describe BlogGenerator::Generator do
     let(:actions) { subject.generate.to_a }
 
     it "returns true" do
-      expect(actions.length).to be(4)
       expect(actions[0]).to be_kind_of(BlogGenerator::CreateDirectoryAction)
       expect(actions[0].target_directory_path).to eql("spec/data/tmp/#{Time.now.strftime('%Y-%m-%d')}-hello-world/")
 
@@ -93,6 +99,17 @@ describe BlogGenerator::Generator do
       expect(body[6]).to eql('# Heading II')
       expect(body[7]).to match(/^Vestibulum.+metus.$/)
       expect(content['publishedAt']).to match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}$/)
+
+      expect(actions[4]).to be_kind_of(BlogGenerator::FileWriteAction)
+      # TODO
+
+      expect(actions[5]).to be_kind_of(BlogGenerator::FileWriteAction)
+      # TODO
+
+      expect(actions[6]).to be_kind_of(BlogGenerator::FileWriteAction)
+      # TODO
+
+      expect(actions.length).to be(7)
     end
   end
 

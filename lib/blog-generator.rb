@@ -57,16 +57,25 @@ module BlogGenerator
       @output_directory = output_directory
     end
 
+    def output_posts_directory
+      File.join(@output_directory, 'posts')
+    end
+
     def output_post_directory
-      File.join(@output_directory, self.output_post_basename)
+      File.join(self.output_posts_directory, self.output_post_basename)
     end
 
     def output_post_basename
       "#{Time.now.strftime('%Y-%m-%d')}-#{self.post.slug}"
     end
 
+    def output_tags_directory
+      File.join(@output_directory, 'tags')
+    end
+
     def generate
       actions = FileSystemActions.new
+      actions << CreateDirectoryAction.new(self.output_posts_directory)
       actions << CreateDirectoryAction.new(self.output_post_directory)
 
       Dir.glob("#{@content_directory}/*").each do |file|
@@ -78,7 +87,44 @@ module BlogGenerator
       json = self.post.as_json.merge(publishedAt: Time.now.iso8601).to_json
       actions << FileWriteAction.new(File.join(self.output_post_directory, "#{self.post.slug}.json"), json)
 
+      actions << self.generate_index
+      actions << CreateDirectoryAction.new(self.output_tags_directory)
+      actions.push(*self.generate_tag_files(self.post.header[:tags]))
+
       actions
+    end
+
+    def existing_posts
+      posts = Array.new
+
+      if Dir.exist?(self.output_posts_directory) # On the first run, it will not exist until the actions are committed.
+        Dir.glob("#{self.output_posts_directory}/*/*.json").each do |file|
+          posts << JSON.parse(file)
+        rescue => error
+          warn "~ Error occurred when parsing #{file}" ###
+          raise error
+        end
+      end
+
+      posts
+    end
+
+    def generate_index
+      posts = self.existing_posts.map do |post|
+        {title: post['title'], excerpt: post['excerpt'], publishedAt: post['publishedAt']}
+      end
+
+      FileWriteAction.new(File.join(@output_directory, 'posts.json'), posts.to_json)
+    end
+
+    def generate_tag_files(tags)
+      tags.map do |tag|
+        posts = self.existing_posts.select { |post| post.header[:tags].include?(tag) }.map do |post|
+          {title: post['title'], excerpt: post['excerpt'], publishedAt: post['publishedAt']}
+        end
+
+        FileWriteAction.new(File.join(@output_directory, 'tags', "#{tag}.json"), posts.to_json)
+      end
     end
   end
 end
