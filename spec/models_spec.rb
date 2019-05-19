@@ -1,7 +1,7 @@
 require 'time'
 require 'blog-generator/models'
 
-describe BlogGenerator::Post do
+describe BlogGenerator::Models::Post do
   subject do
     described_class.new(data)
   end
@@ -18,13 +18,13 @@ describe BlogGenerator::Post do
   end
 end
 
-describe BlogGenerator::Tag do
+describe BlogGenerator::Models::Tag do
   subject do
     described_class.new('Ruby on Rails', [post_I, post_II, post_III])
   end
 
   let(:post_I) do
-    BlogGenerator::Post.new(
+    BlogGenerator::Models::Post.new(
       title: 'Hello world',
       slug: 'hello-world',
       excerpt: 'Lorem ipsum.',
@@ -33,7 +33,7 @@ describe BlogGenerator::Tag do
   end
 
   let(:post_II) do
-    BlogGenerator::Post.new(
+    BlogGenerator::Models::Post.new(
       title: 'Ruby on Rails post I',
       slug: 'ruby-on-rails-post-I',
       excerpt: 'Sed eu est ipsum.',
@@ -42,7 +42,7 @@ describe BlogGenerator::Tag do
   end
 
   let(:post_III) do
-    BlogGenerator::Post.new(
+    BlogGenerator::Models::Post.new(
       title: 'React.js post I',
       slug: 'reactjs-post-I',
       excerpt: 'In sed tortor nulla.',

@@ -1,6 +1,7 @@
 require 'json'
 require 'time' # #iso8601
 require 'blog-generator/post'
+require 'blog-generator/models'
 require 'blog-generator/file-system-actions'
 
 module BlogGenerator
@@ -110,7 +111,7 @@ module BlogGenerator
     end
 
     def post_data(post)
-      Post.new(post).as_json
+      Models::Post.new(post).as_json
     end
 
     def generate_index
@@ -119,14 +120,12 @@ module BlogGenerator
     end
 
     def generate_tag_files(tags)
-      tags.map do |tag|
+      tags.map do |tag_name|
         posts = self.existing_posts.
-          select { |post| post.header[:tags].include?(tag) }.
-          map { |post| self.post_data(post) } # TODO: There should be tag:, posts:
-        Tag.new(tag_name, posts)
-        # TODO: path: /tag/bla, /posts/blah
+          select { |post| post.header[:tags].include?(tag_name) }
+        tag_data = Models::Tag.new(tag_name, posts).as_json
 
-        FileWriteAction.new(File.join(@output_directory, 'tags', "#{tag}.json"), posts.to_json)
+        FileWriteAction.new(File.join(@output_directory, 'tags', "#{tag_name}.json"), tag_data.to_json)
       end
     end
   end
