@@ -109,19 +109,22 @@ module BlogGenerator
       posts
     end
 
-    def generate_index
-      posts = self.existing_posts.map do |post|
-        {title: post['title'], excerpt: post['excerpt'], publishedAt: post['publishedAt']}
-      end
+    def post_data(post)
+      Post.new(post).as_json
+    end
 
+    def generate_index
+      posts = self.existing_posts.map { |post| self.post_data(post) }
       FileWriteAction.new(File.join(@output_directory, 'posts.json'), posts.to_json)
     end
 
     def generate_tag_files(tags)
       tags.map do |tag|
-        posts = self.existing_posts.select { |post| post.header[:tags].include?(tag) }.map do |post|
-          {title: post['title'], excerpt: post['excerpt'], publishedAt: post['publishedAt']}
-        end
+        posts = self.existing_posts.
+          select { |post| post.header[:tags].include?(tag) }.
+          map { |post| self.post_data(post) } # TODO: There should be tag:, posts:
+        Tag.new(tag_name, posts)
+        # TODO: path: /tag/bla, /posts/blah
 
         FileWriteAction.new(File.join(@output_directory, 'tags', "#{tag}.json"), posts.to_json)
       end
