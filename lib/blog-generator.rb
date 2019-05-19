@@ -1,4 +1,5 @@
 require 'json'
+require 'time' # #iso8601
 require 'blog-generator/post'
 require 'blog-generator/file-system-actions'
 
@@ -16,7 +17,7 @@ module BlogGenerator
     end
 
     def post
-      slug = File.basename(self.main_file).split('.').last
+      slug = File.basename(self.main_file).split('.').first
       @post ||= Post.new(slug, File.read(self.main_file))
     end
   end
@@ -66,15 +67,15 @@ module BlogGenerator
 
     def generate
       actions = FileSystemActions.new
-      actions << DirectoryCreateAction.new(self.output_post_directory)
+      actions << CreateDirectoryAction.new(self.output_post_directory)
 
       Dir.glob("#{@content_directory}/*").each do |file|
-        if File.file?(file) && File.basename != File.basename(self.main_file)
+        if File.file?(file) && File.basename(file) != File.basename(self.main_file)
           actions << MoveFileAction.new(file, self.output_post_directory)
         end
       end
 
-      json = self.post.as_json.merge(publishedAt: Time.now).to_json
+      json = self.post.as_json.merge(publishedAt: Time.now.iso8601).to_json
       actions << FileWriteAction.new(File.join(self.output_post_directory, "#{self.post.slug}.json"), json)
 
       actions

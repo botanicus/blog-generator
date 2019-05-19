@@ -18,7 +18,9 @@ puts "~ Validation successful."
 
 generator = BlogGenerator::Generator.new(content_directory, output_directory)
 begin
-  generator.generate
+  actions = generator.generate
+  actions.validate
+  actions.commit
 rescue => error
   abort("#{error.class}: #{error.message}")
 end

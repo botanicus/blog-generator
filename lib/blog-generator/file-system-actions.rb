@@ -9,7 +9,11 @@ module BlogGenerator
         raise TypeError, "Expected object with #validate and #commit methods, got #{action}"
       end
 
-      @actions << actions
+      @actions << action
+    end
+
+    def to_a
+      @actions
     end
 
     def validate
@@ -50,7 +54,7 @@ module BlogGenerator
   class MoveFileAction < FileSystemAction
     attr_reader :source_file, :target_directory
     def initialize(source_file, target_directory)
-      @source_file, @target_directory = source_file, target_directory
+      @source_file, @target_directory = source_file, "#{target_directory}/"
     end
 
     def validate
@@ -92,7 +96,7 @@ module BlogGenerator
   class CreateDirectoryAction < FileSystemAction
     attr_reader :target_directory_path
     def initialize(target_directory_path)
-      @target_directory_path = target_directory_path
+      @target_directory_path = "#{target_directory_path}/"
     end
 
     def validate
