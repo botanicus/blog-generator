@@ -34,12 +34,15 @@ describe BlogGenerator::Generator do
 
     it "returns true" do
       expect(actions[0]).to be_kind_of(BlogGenerator::CreateDirectoryAction)
-      expect(actions[0].target_directory_path).to eql("spec/data/tmp/#{Time.now.strftime('%Y-%m-%d')}-hello-world/")
+      expect(actions[0].target_directory_path).to eql("spec/data/tmp/posts/")
 
-      expect(actions[1]).to be_kind_of(BlogGenerator::FileWriteAction)
-      expect(actions[1].target_file_path).to eql("spec/data/tmp/#{Time.now.strftime('%Y-%m-%d')}-hello-world/hello-world.json")
-      expect { JSON.parse(actions[1].content) }.not_to raise_error
-      content = JSON.parse(actions[1].content)
+      expect(actions[1]).to be_kind_of(BlogGenerator::CreateDirectoryAction)
+      expect(actions[1].target_directory_path).to eql("spec/data/tmp/posts/#{Time.now.strftime('%Y-%m-%d')}-hello-world/")
+
+      expect(actions[2]).to be_kind_of(BlogGenerator::FileWriteAction)
+      expect(actions[2].target_file_path).to eql("spec/data/tmp/posts/#{Time.now.strftime('%Y-%m-%d')}-hello-world/hello-world.json")
+      expect { JSON.parse(actions[2].content) }.not_to raise_error
+      content = JSON.parse(actions[2].content)
       expect(content.keys).to eql(['title', 'excerpt', 'body', 'publishedAt'])
       expect(content['title']).to eql('Hello world')
       expect(content['excerpt']).to match(/^Lorem.+nisi.$/)
@@ -53,13 +56,19 @@ describe BlogGenerator::Generator do
       expect(body[4]).to match(/^Vestibulum.+metus.$/)
       expect(content['publishedAt']).to match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}$/)
 
-      expect(actions[2]).to be_kind_of(BlogGenerator::FileWriteAction)
-      # TODO
-
       expect(actions[3]).to be_kind_of(BlogGenerator::FileWriteAction)
       # TODO
 
-      expect(actions.length).to be(5)
+      expect(actions[4]).to be_kind_of(BlogGenerator::CreateDirectoryAction)
+      # TODO
+
+      expect(actions[5]).to be_kind_of(BlogGenerator::FileWriteAction)
+      # TODO
+
+      expect(actions[6]).to be_kind_of(BlogGenerator::FileWriteAction)
+      # TODO
+
+      expect(actions.length).to be(7)
     end
   end
 
@@ -70,20 +79,23 @@ describe BlogGenerator::Generator do
 
     it "returns true" do
       expect(actions[0]).to be_kind_of(BlogGenerator::CreateDirectoryAction)
-      expect(actions[0].target_directory_path).to eql("spec/data/tmp/#{Time.now.strftime('%Y-%m-%d')}-hello-world/")
+      expect(actions[0].target_directory_path).to eql("spec/data/tmp/posts/")
 
-      expect(actions[1]).to be_kind_of(BlogGenerator::MoveFileAction)
-      expect(actions[1].source_file).to eql('spec/data/content-valid/pic_II.png')
-      expect(actions[1].target_directory).to eql('spec/data/tmp/2019-05-19-hello-world/')
+      expect(actions[1]).to be_kind_of(BlogGenerator::CreateDirectoryAction)
+      expect(actions[1].target_directory_path).to eql("spec/data/tmp/posts/#{Time.now.strftime('%Y-%m-%d')}-hello-world/")
 
       expect(actions[2]).to be_kind_of(BlogGenerator::MoveFileAction)
-      expect(actions[2].source_file).to eql('spec/data/content-valid/pic_I.png')
-      expect(actions[2].target_directory).to eql('spec/data/tmp/2019-05-19-hello-world/')
+      expect(actions[2].source_file).to eql('spec/data/content-valid/pic_II.png')
+      expect(actions[2].target_directory).to eql("spec/data/tmp/posts/#{Time.now.strftime('%Y-%m-%d')}-hello-world/")
 
-      expect(actions[3]).to be_kind_of(BlogGenerator::FileWriteAction)
-      expect(actions[3].target_file_path).to eql("spec/data/tmp/#{Time.now.strftime('%Y-%m-%d')}-hello-world/hello-world.json")
-      expect { JSON.parse(actions[3].content) }.not_to raise_error
-      content = JSON.parse(actions[3].content)
+      expect(actions[3]).to be_kind_of(BlogGenerator::MoveFileAction)
+      expect(actions[3].source_file).to eql('spec/data/content-valid/pic_I.png')
+      expect(actions[3].target_directory).to eql("spec/data/tmp/posts/#{Time.now.strftime('%Y-%m-%d')}-hello-world/")
+
+      expect(actions[4]).to be_kind_of(BlogGenerator::FileWriteAction)
+      expect(actions[4].target_file_path).to eql("spec/data/tmp/posts/#{Time.now.strftime('%Y-%m-%d')}-hello-world/hello-world.json")
+      expect { JSON.parse(actions[4].content) }.not_to raise_error
+      content = JSON.parse(actions[4].content)
       expect(content.keys).to eql(['title', 'excerpt', 'body', 'publishedAt'])
       expect(content['title']).to eql('Post title')
       expect(content['excerpt']).to match(/^Lorem.+nisi.$/)
@@ -100,16 +112,19 @@ describe BlogGenerator::Generator do
       expect(body[7]).to match(/^Vestibulum.+metus.$/)
       expect(content['publishedAt']).to match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}$/)
 
-      expect(actions[4]).to be_kind_of(BlogGenerator::FileWriteAction)
-      # TODO
-
       expect(actions[5]).to be_kind_of(BlogGenerator::FileWriteAction)
       # TODO
 
-      expect(actions[6]).to be_kind_of(BlogGenerator::FileWriteAction)
+      expect(actions[6]).to be_kind_of(BlogGenerator::CreateDirectoryAction)
       # TODO
 
-      expect(actions.length).to be(7)
+      expect(actions[7]).to be_kind_of(BlogGenerator::FileWriteAction)
+      # TODO
+
+      expect(actions[8]).to be_kind_of(BlogGenerator::FileWriteAction)
+      # TODO
+
+      expect(actions.length).to be(9)
     end
   end
 
