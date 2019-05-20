@@ -75,7 +75,8 @@ module BlogGenerator
     end
 
     def generate
-      actions = FileSystemActions.new
+      actions, published_at = FileSystemActions.new, Time.now
+
       actions << CreateDirectoryAction.new(self.output_posts_directory)
       actions << CreateDirectoryAction.new(self.output_post_directory)
 
@@ -85,12 +86,12 @@ module BlogGenerator
         end
       end
 
-      json = self.post.as_json.merge(publishedAt: Time.now.iso8601).to_json
+      json = Models::FullPostFromPost.new(self.post).as_json(published_at).to_json
       actions << FileWriteAction.new(File.join(self.output_post_directory, "#{self.post.slug}.json"), json)
 
-      actions << self.generate_index
+      actions << self.generate_index(published_at)
       actions << CreateDirectoryAction.new(self.output_tags_directory)
-      actions.push(*self.generate_tag_files(self.post.header[:tags]))
+      actions.push(*self.generate_tag_files(self.post.header[:tags], published_at))
 
       actions
     end
@@ -110,20 +111,27 @@ module BlogGenerator
       posts
     end
 
-    def post_data(post)
-      Models::Post.new(post).as_json
+    # The current post doesn't exist as a JSON file yet.
+    def all_posts(published_at)
+      self.existing_posts << Models::PostIndexFromPost.new(self.post).as_json(published_at)
     end
 
-    def generate_index
-      posts = self.existing_posts.map { |post| self.post_data(post) }
+    def post_data(post)
+      Models::PostFromStoredPost.new(post).as_json
+    end
+
+    def generate_index(published_at)
+      posts = self.all_posts(published_at).map { |post| self.post_data(post) }
       FileWriteAction.new(File.join(@output_directory, 'posts.json'), posts.to_json)
     end
 
-    def generate_tag_files(tags)
+    def generate_tag_files(tags, published_at)
       tags.map do |tag_name|
-        posts = self.existing_posts.
-          select { |post| post.header[:tags].include?(tag_name) }
-        tag_data = Models::Tag.new(tag_name, posts).as_json
+        posts = self.all_posts(published_at).
+          select { |post| post.fetch(:tags).include?(tag_name) }.
+          map { |post| Models::PostFromStoredPost.new(post) }
+
+        tag_data = Models::Tag.new(tag_name, posts).as_json(published_at)
 
         FileWriteAction.new(File.join(@output_directory, 'tags', "#{tag_name}.json"), tag_data.to_json)
       end

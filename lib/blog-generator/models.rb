@@ -1,18 +1,44 @@
+require 'time' # #iso8601
+
 module BlogGenerator
   module Models
-    class Post
+    class PostFromStoredPost
       def initialize(hash_data)
         @hash_data = hash_data.transform_keys(&:to_sym)
       end
 
-      def as_json
+      def as_json(*)
         {
           title: @hash_data.fetch(:title),
           slug: @hash_data.fetch(:slug),
-          path: "/posts/#{@hash_data.fetch(:slug)}",
+          path: @hash_data.fetch(:path),
+          tags: @hash_data.fetch(:tags),
           excerpt: @hash_data.fetch(:excerpt),
           publishedAt: @hash_data.fetch(:publishedAt)
         }
+      end
+    end
+
+    class PostIndexFromPost
+      def initialize(post)
+        @post = post
+      end
+
+      def as_json(published_at)
+        {
+          title: @post.title,
+          slug: @post.slug,
+          path: "/posts/#{published_at.strftime('%Y-%m-%d')}-#{@post.slug}/#{@post.slug}.json",
+          tags: @post.header[:tags],
+          excerpt: @post.excerpt,
+          publishedAt: published_at.iso8601
+        }
+      end
+    end
+
+    class FullPostFromPost < PostIndexFromPost
+      def as_json(published_at)
+        super(published_at).merge(body: @post.body)
       end
     end
 
@@ -25,8 +51,8 @@ module BlogGenerator
         end
       end
 
-      def as_json
-        {tag: self.tag_data, posts: @posts.map(&:as_json)}
+      def as_json(published_at)
+        {tag: self.tag_data, posts: @posts.map { |post| post.as_json(published_at) }}
       end
 
       def tag_data

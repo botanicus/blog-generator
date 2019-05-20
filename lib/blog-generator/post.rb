@@ -60,10 +60,6 @@ module BlogGenerator
       end
     end
 
-    def as_json
-      {title: self.title, excerpt: self.excerpt, body: self.body}
-    end
-
     def validate
       unless self.document.css('h1').length == 1
         raise ValidationError, "There was supposed to be exactly 1 <h1> element"
